@@ -65,6 +65,7 @@ export const projects: Project[] = [
       "Google Gemini API",
     ],
     links: {
+      live: "https://triapex-web.onrender.com/",
       github: "https://github.com/Aung422001/Tri-Apex-Trading-Store",
       caseStudy:
         "https://github.com/Aung422001/Tri-Apex-Trading-Store/blob/main/prd.md",
