@@ -61,32 +61,19 @@ link that 404s.
 
 ### Project images
 
-| Project | Image | Kind |
-|---|---|---|
-| Merbolo | `public/projects/merbolo.png` | **Real screenshot** of the live Vercel deployment |
-| Tri-Apex | `public/projects/triapex.svg` | Designed cover |
-| Smart Office IoT | `public/projects/smart-office.svg` | Designed cover |
-| Recursion | `public/projects/recursion.svg` | Designed cover |
-| CryptoQ | `public/projects/cryptoq.svg` | Designed cover |
+Every project carries a real screenshot of the running app, in `public/projects/`:
+`merbolo.png`, `triapex.png`, `recursion.png`, `smart-office.png`, `cryptoq.png`.
 
-The covers are hand-written SVGs (~4 KB each) in the site palette, standing in until real
-screenshots exist. Editable sources live in `design/covers/` — edit those and copy the result
-into `public/projects/`.
+They are pre-cropped to **16:10** and rendered with `object-position: top`, so a tall
+page screenshot shows its header and headline figures rather than a slice of its middle.
+Capture at any size, then crop to 1600x1000 anchored to the top.
 
-`imageKind` on each project controls the alt text: `"screenshot"` gets a description, `"cover"`
-gets an empty alt because it is decorative and the project title sits right beside it.
+To replace one, drop the new file in `public/projects/` keeping the same name. To add a
+project without a screenshot yet, leave `image` unset — `ProjectVisual` draws a styled
+placeholder rather than a broken image.
 
-**To swap a cover for a real screenshot**, capture the running app at roughly 1440×900, save it
-as `public/projects/<slug>.png`, and update that project in `src/data/projects.ts`:
-
-```ts
-image: "/projects/recursion.png",
-imageKind: "screenshot",
-```
-
-Covers are rendered with a plain `<img>` rather than `next/image`, because `next/image` refuses
-SVG unless `dangerouslyAllowSVG` is enabled globally — which would also apply to remote SVGs.
-Raster screenshots do go through `next/image`.
+`imageKind: "screenshot"` gives the image a descriptive alt. `"cover"` marks it decorative
+with an empty alt, for artwork that only stands in for a screenshot.
 
 ### Connecting the contact form
 

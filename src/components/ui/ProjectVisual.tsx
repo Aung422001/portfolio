@@ -15,10 +15,11 @@ const frame =
   "relative aspect-[16/10] overflow-hidden rounded-2xl border border-[var(--line)] bg-[#eef8f7]";
 
 /**
- * Three cases, in order of preference:
- *   1. a real screenshot (PNG/JPG) — through next/image, with a descriptive alt
- *   2. designed cover art (SVG) — a plain <img>, decorative, empty alt
- *   3. nothing yet — a deliberate placeholder, never a broken image
+ * Renders a project's screenshot, or a deliberate placeholder when one has not
+ * been added yet — never a broken image.
+ *
+ * Screenshots are pre-cropped to 16:10 and anchored to the top, so the app's
+ * header and headline numbers are what show rather than a slice of its middle.
  */
 export function ProjectVisual({
   title,
@@ -29,31 +30,6 @@ export function ProjectVisual({
   className = "",
 }: ProjectVisualProps) {
   if (image) {
-    const isVector = image.endsWith(".svg");
-
-    if (isVector) {
-      return (
-        <div className={`${frame} ${className}`}>
-          {/*
-            next/image refuses SVG unless `dangerouslyAllowSVG` is turned on
-            globally, which would also apply to any remote SVG. These covers are
-            local, hand-written and ~4 KB, so a plain <img> is both safer and
-            smaller than an optimised raster would be.
-            Decorative: the project title sits directly beside it.
-          */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={image}
-            alt=""
-            width={1200}
-            height={750}
-            loading={priority ? "eager" : "lazy"}
-            className="h-full w-full object-cover"
-          />
-        </div>
-      );
-    }
-
     return (
       <div className={`${frame} ${className}`}>
         <Image
@@ -65,7 +41,7 @@ export function ProjectVisual({
           }
           fill
           sizes="(max-width: 768px) 100vw, 55vw"
-          className="object-cover"
+          className="object-cover object-top"
           priority={priority}
         />
       </div>

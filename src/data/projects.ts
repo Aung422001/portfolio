@@ -8,8 +8,9 @@ import type { Project } from "@/types";
  * Tri-Apex follows immediately and carries a badge, because it is the only
  * professional role here and that context matters more than its position.
  *
- * Scope and stack match the CV. Only `links.live` values that actually resolve
- * are listed.
+ * Every project now carries a real screenshot of the running app. Scope and
+ * stack match the CV. Only `links.live` values that actually resolve are
+ * listed.
  */
 export const projects: Project[] = [
   {
@@ -68,8 +69,8 @@ export const projects: Project[] = [
       caseStudy:
         "https://github.com/Aung422001/Tri-Apex-Trading-Store/blob/main/prd.md",
     },
-    image: "/projects/triapex.svg",
-    imageKind: "cover",
+    image: "/projects/triapex.png",
+    imageKind: "screenshot",
     year: "2026",
   },
   {
@@ -81,8 +82,8 @@ export const projects: Project[] = [
     stack: ["React", "Vite", "Tailwind CSS", "Node.js", "Express", "MongoDB", "JWT"],
     metrics: [{ value: "218", label: "Automated tests" }],
     links: { github: "https://github.com/Aung422001/Recursion" },
-    image: "/projects/recursion.svg",
-    imageKind: "cover",
+    image: "/projects/recursion.png",
+    imageKind: "screenshot",
     year: "2026",
   },
   {
@@ -101,8 +102,8 @@ export const projects: Project[] = [
       "JWT",
     ],
     links: { github: "https://github.com/Aung422001/IOTProject" },
-    image: "/projects/smart-office.svg",
-    imageKind: "cover",
+    image: "/projects/smart-office.png",
+    imageKind: "screenshot",
     year: "2025",
   },
   {
@@ -113,8 +114,8 @@ export const projects: Project[] = [
       "Build a trading strategy from indicator conditions, then backtest it against real Binance candles. It handles position sizing from a risk percentage, fees and slippage, and the awkward case where stop-loss and take-profit are touched in the same candle. When the exchange can't be reached it falls back to a synthetic series and says so on screen.",
     stack: ["React", "Vite", "Express", "MongoDB", "Docker"],
     links: { github: "https://github.com/Aung422001/cryptoq" },
-    image: "/projects/cryptoq.svg",
-    imageKind: "cover",
+    image: "/projects/cryptoq.png",
+    imageKind: "screenshot",
     year: "2026",
   },
 ];
