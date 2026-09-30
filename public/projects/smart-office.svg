@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-label="Abstract IoT device dashboard with toggles and a live signal">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef8f7"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="spark" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5ecfcb" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#5ecfcb" stop-opacity="0.9"/>
+    </linearGradient>
+    <filter id="soft2" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="22" flood-color="#16293c" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#bg2)"/>
+  <circle cx="170" cy="150" r="190" fill="#86e0dd" opacity="0.14"/>
+  <circle cx="1040" cy="620" r="160" fill="#86e0dd" opacity="0.10"/>
+
+  <g filter="url(#soft2)">
+    <rect x="130" y="110" width="940" height="530" rx="22" fill="#ffffff" stroke="#e2efee" stroke-width="2"/>
+  </g>
+
+  <!-- header -->
+  <rect x="166" y="150" width="150" height="14" rx="7" fill="#16293c" opacity="0.7"/>
+  <g>
+    <circle cx="960" cy="157" r="6" fill="#34d399"/>
+    <circle cx="960" cy="157" r="11" fill="#34d399" opacity="0.22"/>
+    <rect x="978" y="151" width="56" height="12" rx="6" fill="#c9e3e0"/>
+  </g>
+  <line x1="166" y1="196" x2="1034" y2="196" stroke="#e2efee" stroke-width="2"/>
+
+  <!-- device cards -->
+  <g>
+    <!-- on -->
+    <rect x="166" y="228" width="272" height="150" rx="16" fill="#16293c"/>
+    <rect x="194" y="256" width="96" height="11" rx="5.5" fill="#ffffff" opacity="0.85"/>
+    <rect x="194" y="278" width="60" height="9" rx="4.5" fill="#86e0dd" opacity="0.7"/>
+    <rect x="336" y="252" width="74" height="38" rx="19" fill="#86e0dd"/>
+    <circle cx="391" cy="271" r="14" fill="#ffffff"/>
+    <rect x="194" y="332" width="216" height="8" rx="4" fill="#ffffff" opacity="0.14"/>
+    <rect x="194" y="332" width="150" height="8" rx="4" fill="#86e0dd" opacity="0.8"/>
+
+    <!-- off -->
+    <rect x="464" y="228" width="272" height="150" rx="16" fill="#f7fdfc" stroke="#e2efee" stroke-width="1.5"/>
+    <rect x="492" y="256" width="82" height="11" rx="5.5" fill="#16293c" opacity="0.6"/>
+    <rect x="492" y="278" width="54" height="9" rx="4.5" fill="#c9e3e0"/>
+    <rect x="634" y="252" width="74" height="38" rx="19" fill="#dcecea"/>
+    <circle cx="653" cy="271" r="14" fill="#ffffff"/>
+    <rect x="492" y="332" width="216" height="8" rx="4" fill="#e2efee"/>
+    <rect x="492" y="332" width="64" height="8" rx="4" fill="#c9e3e0"/>
+
+    <!-- on -->
+    <rect x="762" y="228" width="272" height="150" rx="16" fill="#f7fdfc" stroke="#e2efee" stroke-width="1.5"/>
+    <rect x="790" y="256" width="104" height="11" rx="5.5" fill="#16293c" opacity="0.6"/>
+    <rect x="790" y="278" width="46" height="9" rx="4.5" fill="#c9e3e0"/>
+    <rect x="932" y="252" width="74" height="38" rx="19" fill="#86e0dd"/>
+    <circle cx="987" cy="271" r="14" fill="#ffffff"/>
+    <rect x="790" y="332" width="216" height="8" rx="4" fill="#e2efee"/>
+    <rect x="790" y="332" width="186" height="8" rx="4" fill="#5ecfcb"/>
+  </g>
+
+  <!-- live chart panel -->
+  <rect x="166" y="410" width="868" height="194" rx="16" fill="#f7fdfc" stroke="#e2efee" stroke-width="1.5"/>
+  <rect x="194" y="438" width="112" height="11" rx="5.5" fill="#16293c" opacity="0.55"/>
+
+  <!-- grid lines -->
+  <g stroke="#e2efee" stroke-width="1.5">
+    <line x1="194" y1="500" x2="1006" y2="500"/>
+    <line x1="194" y1="540" x2="1006" y2="540"/>
+    <line x1="194" y1="580" x2="1006" y2="580"/>
+  </g>
+
+  <!-- signal -->
+  <path d="M194 566 L254 540 L314 552 L374 508 L434 524 L494 486 L554 502 L614 470 L674 494 L734 456 L794 478 L854 450 L914 466 L1006 432"
+        fill="none" stroke="url(#spark)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="1006" cy="432" r="7" fill="#5ecfcb"/>
+  <circle cx="1006" cy="432" r="14" fill="#5ecfcb" opacity="0.2"/>
+</svg>

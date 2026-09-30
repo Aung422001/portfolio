@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens
+   The reference's signature move is a turquoise page with the whole site
+   sitting on it as one large off-white card. Everything else is restrained:
+   one accent, thin rules, dark navy text, lots of whitespace.
+   ========================================================================== */
+
+@theme {
+  --color-lagoon: #86e0dd;
+  --color-lagoon-deep: #5ecfcb;
+  --color-shell: #f7fdfc;
+  --color-shell-sunk: #eef8f7;
+  --color-ink: #16293c;
+  --color-ink-soft: #4c6274;
+  --color-ink-faint: #5a7180;
+  --color-line: #e2efee;
+
+  --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-shell: 28px;
+}
+
+:root {
+  /* Kept as plain custom properties so they work inside arbitrary values too */
+  --ink: #16293c;
+  --ink-soft: #4c6274;
+  /* Used for small labels, dates and meta text, so it has to clear 4.5:1 on
+     both --shell and the sunk chip background — a lighter grey looked closer
+     to the reference but failed contrast at these sizes. */
+  --ink-faint: #5a7180;
+  /* Purely decorative: the oversized marquee behind section headings. */
+  --ink-ghost: #7b8f9e;
+  --line: #e2efee;
+  --shell: #f7fdfc;
+  --lagoon: #86e0dd;
+}
+
+* {
+  border-color: var(--line);
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Sticky header clearance for anchor jumps */
+  scroll-padding-top: 6rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  background: var(--lagoon);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The floating shell that holds the whole site */
+.shell {
+  background: var(--shell);
+  border-radius: var(--radius-shell);
+  overflow: clip; /* clip, not hidden — hidden breaks position: sticky inside */
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--shell);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* --------------------------------------------------------------- marquee */
+/* Two identical tracks side by side; translating one full track width and
+   looping is seamless. Pure CSS so it costs no main-thread work. */
+
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 28s) linear infinite;
+}
+
+.marquee-track {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-paused {
+  animation-play-state: paused;
+}
+
+/* -------------------------------------------------------- scroll reveal */
+/* Content is only hidden while `js-reveal` is on <html>, which the inline
+   script in layout.tsx sets and removes again if React never mounts. So a
+   hydration failure can never leave the page blank. */
+
+.js-reveal .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--rd, 0s);
+}
+
+.js-reveal .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Heading mask: the text rises out of a clipping box, like the hero.
+   The padding/negative-margin pair stops the clip cutting descenders
+   (the tails of g, y and p) off the bottom of the line. */
+.reveal-mask {
+  display: block;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.js-reveal .reveal-mask {
+  overflow: hidden;
+}
+
+.js-reveal .reveal-mask > span {
+  display: block;
+  transform: translateY(105%);
+  opacity: 0;
+  transition:
+    transform 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--rd, 0s);
+}
+
+.js-reveal .reveal-mask.is-visible > span {
+  transform: none;
+  opacity: 1;
+}
+
+/* ------------------------------------------------------- hero entrance */
+/* The hero is above the fold, so it must not wait for hydration. Framer
+   writes its `initial` state into the server HTML as opacity:0, which would
+   leave the largest text on the page blank until JS runs — bad for LCP and
+   worse on a slow device. Plain CSS with fill-mode `both` paints and animates
+   with no JavaScript at all. */
+
+.hero-in {
+  animation: hero-in 0.62s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------ typography */
+
+.h-display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+/* ------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee {
+    animation: none;
+    /* Without the scroll the duplicate track is just repeated noise */
+    width: 100%;
+    justify-content: center;
+  }
+  .marquee-track:nth-child(2) {
+    display: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .js-reveal .reveal,
+  .js-reveal .reveal-mask > span {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .js-reveal .reveal-mask {
+    overflow: visible;
+  }
+}
