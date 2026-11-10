@@ -14,7 +14,7 @@ export function Navbar() {
   const active = useActiveSection(SECTION_IDS);
   const scrolled = useScrolled();
 
-  // Close on Escape, and stop the page scrolling behind the open sheet
+  // Keep native anchor scrolling available while the disclosure menu is open.
   useEffect(() => {
     if (!open) return;
 
@@ -23,12 +23,9 @@ export function Navbar() {
     };
 
     document.addEventListener("keydown", onKey);
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = previous;
     };
   }, [open]);
 
@@ -49,7 +46,7 @@ export function Navbar() {
           className="mr-auto flex items-center gap-2.5 rounded-full"
           aria-label={`${profile.name} — home`}
         >
-          <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--ink)] text-[0.7rem] font-semibold tracking-tight text-[var(--shell)]">
+          <span className="grid h-8 w-8 place-items-center rounded-md bg-[var(--lagoon)] text-[0.7rem] font-semibold tracking-tight text-[var(--on-accent)]">
             {profile.initials}
           </span>
           <span className="hidden text-[0.9rem] font-medium sm:block">
@@ -106,18 +103,25 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden border-t border-[var(--line)] bg-[var(--shell)] md:hidden"
+            className="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-[var(--line)] bg-[var(--shell)] md:hidden"
           >
             <ul className="px-5 py-3 sm:px-8">
               {navItems.map((item) => (
                 <li key={item.id}>
                   <a
                     href={item.href}
-                    onClick={() => setOpen(false)}
+                    onClick={(event) => {
+                      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                      event.preventDefault();
+                      setOpen(false);
+                      window.history.pushState(null, "", item.href);
+                      // Smooth scrolling races the menu's exit animation.
+                      document.getElementById(item.id)?.scrollIntoView({ behavior: "instant" });
+                    }}
                     aria-current={active === item.id ? "true" : undefined}
-                    className={`block rounded-xl px-3 py-3 text-[0.95rem] ${
+                    className={`block rounded-lg px-3 py-3 text-[0.95rem] ${
                       active === item.id
-                        ? "bg-[#eef8f7] text-[var(--ink)]"
+                        ? "bg-[var(--surface)] text-[var(--ink)]"
                         : "text-[var(--ink-soft)]"
                     }`}
                   >
@@ -125,15 +129,6 @@ export function Navbar() {
                   </a>
                 </li>
               ))}
-              <li className="px-3 pb-2 pt-3">
-                <Button
-                  href="#contact"
-                  className="w-full"
-                  onClick={() => setOpen(false)}
-                >
-                  Let&rsquo;s Talk
-                </Button>
-              </li>
             </ul>
           </motion.div>
         )}

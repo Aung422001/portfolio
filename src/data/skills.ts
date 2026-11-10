@@ -1,10 +1,5 @@
 import type { SkillGroup } from "@/types";
 
-/**
- * Mirrors the four groups on the CV exactly. Anything not on the CV is not
- * here either — a portfolio that lists more tools than the résumé is the first
- * thing a careful reviewer notices.
- */
 export const skillGroups: SkillGroup[] = [
   {
     title: "Frontend",
@@ -43,6 +38,6 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     title: "AI",
-    items: ["Google Gemini API", "Claude Code"],
+    items: ["Google Gemini API", "Claude Code", "Codex"],
   },
 ];

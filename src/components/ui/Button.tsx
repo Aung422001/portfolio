@@ -4,17 +4,17 @@ type Variant = "solid" | "outline" | "ghost" | "dark";
 type Size = "sm" | "md";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium " +
+  "inline-flex items-center justify-center gap-2 rounded-md font-medium " +
   "transition-[background-color,border-color,color,transform] duration-200 " +
   "active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60";
 
 const variants: Record<Variant, string> = {
   solid:
-    "bg-[var(--lagoon)] text-[var(--ink)] border border-transparent hover:bg-[#6fd6d2]",
+    "bg-[var(--lagoon)] text-[var(--on-accent)] border border-transparent hover:bg-[var(--accent-hover)]",
   outline:
     "border border-[var(--line)] bg-transparent text-[var(--ink)] hover:border-[var(--ink)]",
   ghost: "text-[var(--ink)] hover:bg-[var(--line)]/60 border border-transparent",
-  dark: "bg-[var(--ink)] text-[var(--shell)] border border-transparent hover:bg-[#0f1d2b]",
+  dark: "bg-[var(--lagoon)] text-[var(--on-accent)] border border-transparent hover:bg-[var(--accent-hover)]",
 };
 
 const sizes: Record<Size, string> = {

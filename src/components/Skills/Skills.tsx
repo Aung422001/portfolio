@@ -12,7 +12,7 @@ export function Skills() {
     >
       {/* Four groups, so four columns on wide screens — a 3-col grid would
           leave a dead cell in the second row. */}
-      <ul className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--line)] sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="mt-12 grid gap-px overflow-hidden rounded-lg border border-[var(--line)] bg-[var(--line)] sm:grid-cols-2 lg:grid-cols-4">
         {skillGroups.map((group, index) => (
           <Reveal
             as="li"
@@ -27,7 +27,7 @@ export function Skills() {
               {group.items.map((item) => (
                 <li
                   key={item}
-                  className="rounded-lg bg-[#eef8f7] px-2.5 py-1.5 text-[0.82rem] text-[var(--ink-soft)]"
+                  className="rounded-lg bg-[var(--surface)] px-2.5 py-1.5 text-[0.82rem] text-[var(--ink-soft)]"
                 >
                   {item}
                 </li>

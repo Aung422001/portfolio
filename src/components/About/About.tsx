@@ -6,7 +6,7 @@ import { Counter } from "@/components/ui/Counter";
 
 export function About() {
   return (
-    <Section id="about" marqueeText="About me" className="py-16 sm:py-20">
+    <Section id="about" className="py-16 sm:py-20">
       <div className="grid gap-10 lg:grid-cols-[0.85fr_1fr] lg:gap-16">
         <Reveal>
           <RevealText
@@ -50,7 +50,7 @@ export function About() {
         </Reveal>
       </div>
 
-      <dl className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--line)] sm:mt-16 lg:grid-cols-4">
+      <dl className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-[var(--line)] bg-[var(--line)] sm:mt-16 lg:grid-cols-4">
         {stats.map((stat) => (
           <div key={stat.label} className="bg-[var(--shell)] px-5 py-7 text-center">
             <dt className="sr-only">{stat.label}</dt>

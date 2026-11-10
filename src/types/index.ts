@@ -39,6 +39,7 @@ export interface Project {
   badge?: string;
   description: string;
   stack: string[];
+  demoNote?: string;
   features?: string[];
   metrics?: Metric[];
   links: ProjectLinks;

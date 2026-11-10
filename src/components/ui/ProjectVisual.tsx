@@ -12,7 +12,7 @@ interface ProjectVisualProps {
 }
 
 const frame =
-  "relative aspect-[16/10] overflow-hidden rounded-2xl border border-[var(--line)] bg-[#eef8f7]";
+  "relative aspect-[16/10] overflow-hidden rounded-lg border border-[var(--line)] bg-[var(--surface)]";
 
 /**
  * Renders a project's screenshot, or a deliberate placeholder when one has not

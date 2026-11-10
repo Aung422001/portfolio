@@ -7,11 +7,11 @@ import { ProjectVisual } from "@/components/ui/ProjectVisual";
 export function FeaturedProject({ project }: { project: Project }) {
   return (
     <Reveal as="article" className="mt-12">
-      <div className="overflow-hidden rounded-3xl border border-[var(--line)] bg-white/50">
+      <div className="overflow-hidden rounded-lg border border-[var(--line)] border-t-2 border-t-[var(--lagoon)] bg-[var(--surface)]">
         <div className="grid lg:grid-cols-[1.05fr_1fr]">
           <div className="order-2 p-7 sm:p-9 lg:order-1 lg:p-11">
             <p className="text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
-              Featured &middot; {project.year}
+              {project.badge ?? "Featured"} &middot; {project.year}
             </p>
 
             <h3 className="h-display mt-4 text-[clamp(1.6rem,3.4vw,2.35rem)] text-[var(--ink)]">
@@ -52,6 +52,11 @@ export function FeaturedProject({ project }: { project: Project }) {
                 </Button>
               )}
             </div>
+            {project.demoNote && (
+              <p className="mt-4 text-[0.8rem] leading-relaxed text-[var(--ink-soft)]">
+                {project.demoNote}
+              </p>
+            )}
           </div>
 
           <div className="order-1 p-7 sm:p-9 lg:order-2 lg:py-11 lg:pl-0 lg:pr-11">
@@ -88,7 +93,7 @@ export function FeaturedProject({ project }: { project: Project }) {
         )}
 
         {project.metrics && (
-          <div className="border-t border-[var(--line)] bg-[#eef8f7]/60 px-7 py-7 sm:px-9 lg:px-11">
+          <div className="border-t border-[var(--line)] bg-[var(--surface-soft)] px-7 py-7 sm:px-9 lg:px-11">
             <h4 className="text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
               Performance
             </h4>

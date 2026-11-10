@@ -81,7 +81,7 @@ export function ContactForm() {
   )}&body=${encodeURIComponent(`${fields.message}\n\n— ${fields.name} (${fields.email})`)}`;
 
   const fieldClass =
-    "w-full rounded-xl border bg-white/70 px-4 py-3 text-[0.92rem] text-[var(--ink)] " +
+    "w-full rounded-lg border bg-[var(--shell)] px-4 py-3 text-[0.92rem] text-[var(--ink)] " +
     "placeholder:text-[var(--ink-faint)] focus:outline-none focus-visible:outline-2 " +
     "focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]";
 
@@ -104,7 +104,7 @@ export function ContactForm() {
           placeholder="Your name"
         />
         {errors.name && (
-          <p id="name-error" className="mt-1.5 text-[0.78rem] text-red-600">
+          <p id="name-error" className="mt-1.5 text-[0.78rem] text-[var(--error)]">
             {errors.name}
           </p>
         )}
@@ -127,7 +127,7 @@ export function ContactForm() {
           placeholder="you@example.com"
         />
         {errors.email && (
-          <p id="email-error" className="mt-1.5 text-[0.78rem] text-red-600">
+          <p id="email-error" className="mt-1.5 text-[0.78rem] text-[var(--error)]">
             {errors.email}
           </p>
         )}
@@ -149,7 +149,7 @@ export function ContactForm() {
           placeholder="What are you building?"
         />
         {errors.message && (
-          <p id="message-error" className="mt-1.5 text-[0.78rem] text-red-600">
+          <p id="message-error" className="mt-1.5 text-[0.78rem] text-[var(--error)]">
             {errors.message}
           </p>
         )}
@@ -157,20 +157,19 @@ export function ContactForm() {
 
       <Button type="submit" variant="dark" className="w-full sm:w-auto">
         <Send size={15} aria-hidden />
-        Send Message
+        Prepare Email
       </Button>
 
       <div role="status" aria-live="polite">
         {submitted && (
-          <div className="rounded-xl border border-[var(--line)] bg-[#eef8f7] p-4 text-[0.85rem] text-[var(--ink-soft)]">
+          <div className="rounded-lg border border-[var(--line)] bg-[var(--surface)] p-4 text-[0.85rem] text-[var(--ink-soft)]">
             <p className="font-medium text-[var(--ink)]">Your message is ready.</p>
             <p className="mt-1.5">
-              This form has no email service connected yet, so nothing was sent
-              automatically.{" "}
+              Nothing has been sent.{" "}
               <a href={mailto} className="font-medium text-[var(--ink)] underline underline-offset-4">
                 Open it in your email app
               </a>{" "}
-              to send it to {profile.email}.
+              to review and send it to {profile.email}.
             </p>
           </div>
         )}

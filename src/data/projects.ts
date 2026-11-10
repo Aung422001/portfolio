@@ -1,24 +1,13 @@
 import type { Project } from "@/types";
 
-/**
- * Merbolo leads because it is the only project with a working live demo and a
- * real screenshot — a recruiter can click it and see it running, which beats
- * any amount of description.
- *
- * Tri-Apex follows immediately and carries a badge, because it is the only
- * professional role here and that context matters more than its position.
- *
- * Every project now carries a real screenshot of the running app. Scope and
- * stack match the CV. Only `links.live` values that actually resolve are
- * listed.
- */
 export const projects: Project[] = [
   {
     slug: "merbolo",
     title: "Merbolo Stationery Store",
-    tagline: "Live storefront with working Stripe checkout",
+    tagline: "Full-stack storefront and admin dashboard",
     description:
-      "A full e-commerce storefront built end to end: product catalogue, cart and a working Stripe checkout on a JWT-authenticated Express and MongoDB API. Behind it sits an admin dashboard for managing products and orders, with Zustand holding client state and Axios handling the API layer. It is deployed and you can buy something in it.",
+      "Built the customer shopping flow and an admin dashboard for products and orders. React and Zustand manage the interface and cart state; an Express and MongoDB API provides authenticated data, with Stripe handling checkout.",
+    demoNote: "The catalog depends on a hosted API and may take time to load. The screenshot shows the interface without waiting for the backend.",
     stack: [
       "React",
       "Vite",
@@ -44,7 +33,21 @@ export const projects: Project[] = [
     },
     image: "/projects/merbolo.png",
     imageKind: "screenshot",
+    year: "2026",
+  },
+  {
+    slug: "applytrail",
     featured: true,
+    title: "ApplyTrail",
+    tagline: "Job application tracker with a companion browser extension",
+    badge: "Latest project",
+    description:
+      "Built a React workspace to track applications from saved jobs to interviews and offers. Google sign-in connects account-specific MongoDB records; a companion extension captures job links and syncs applications with the portal. Optional Gmail integration supports referee invitations, reply checking and notifications.",
+    stack: ["React", "Vite", "Node.js", "MongoDB", "Google OAuth", "Gmail API", "Chrome Extension"],
+    links: { live: "https://applytrail-km2o.onrender.com" },
+    image: "/projects/applytrail.jpg",
+    imageKind: "screenshot",
+    demoNote: "The hosted demo may need time to wake up. Guest tracking works without Google sign-in; Gmail features require a connected account. Source code is private.",
     year: "2026",
   },
   {
@@ -53,7 +56,8 @@ export const projects: Project[] = [
     tagline: "Frontend for a full-stack commerce platform",
     badge: "Professional work",
     description:
-      "Three months as a junior developer at Tri-Apex Trading Group, building the frontend of an e-commerce platform for 3D printers, filaments and accessories. I covered the product catalogue, the cart and the checkout, and added a customer-support chat widget on the Gemini API that took routine questions off the team's plate. The lesson that stuck: predictable state matters more than clever code, which is why the app leans on Zustand and TanStack Query as it grew.",
+      "Built product catalogue, cart and checkout interfaces during a three-month junior developer role. Used TanStack Query for API data, Zustand for shared client state, and the Gemini API for a customer-support chat widget.",
+    demoNote: "Hosted on Render; the first visit may need time to wake the service. Project notes and a screenshot are available while it starts.",
     stack: [
       "Next.js",
       "React",
@@ -68,7 +72,7 @@ export const projects: Project[] = [
       live: "https://triapex-web.onrender.com/",
       github: "https://github.com/Aung422001/Tri-Apex-Trading-Store",
       caseStudy:
-        "https://github.com/Aung422001/Tri-Apex-Trading-Store/blob/main/prd.md",
+        "https://github.com/Aung422001/Tri-Apex-Trading-Store/blob/master/prd.md",
     },
     image: "/projects/triapex.png",
     imageKind: "screenshot",

@@ -1,6 +1,6 @@
 # Aung Kyaw Hein — Portfolio
 
-Personal portfolio for a full-stack JavaScript developer. Next.js App Router,
+Personal portfolio for a frontend developer. Next.js App Router,
 TypeScript, Tailwind v4, Framer Motion, Lucide icons. No CMS, no database — all
 content lives in typed files under `src/data`.
 
@@ -10,6 +10,7 @@ npm run build      # production build
 npm start          # serve the build
 npm run lint       # eslint
 npm run typecheck  # tsc --noEmit
+npm test           # project links, assets and navigation data
 ```
 
 ## Structure
@@ -48,7 +49,7 @@ change copy.
 | `profile.ts` | Name, role, intro, contact links, stats, nav items |
 | `skills.ts` | The five skill groups |
 | `services.ts` | The six "What I Can Build" cards |
-| `projects.ts` | Featured project + the four others |
+| `projects.ts` | Featured ApplyTrail project + five more |
 | `experience.ts` | Internship, education, and the five process steps |
 
 ### Adding your CV
@@ -62,11 +63,17 @@ link that 404s.
 ### Project images
 
 Every project carries a real screenshot of the running app, in `public/projects/`:
-`merbolo.png`, `triapex.png`, `recursion.png`, `smart-office.png`, `cryptoq.png`.
+`merbolo.png`, `applytrail.jpg`, `triapex.png`, `recursion.png`, `smart-office.png`, `cryptoq.png`.
+ApplyTrail uses fictional guest demo records; its private repository is not linked.
+Project cards show screenshots on both mobile and desktop, without requiring hover.
 
 They are pre-cropped to **16:10** and rendered with `object-position: top`, so a tall
 page screenshot shows its header and headline figures rather than a slice of its middle.
 Capture at any size, then crop to 1600x1000 anchored to the top.
+
+The home page puts projects immediately after the hero, followed by About, Skills,
+Experience and Contact. Services and Process are not rendered to avoid repeating
+the project and experience descriptions.
 
 To replace one, drop the new file in `public/projects/` keeping the same name. To add a
 project without a screenshot yet, leave `image` unset — `ProjectVisual` draws a styled
@@ -95,13 +102,11 @@ off-screen at load anyway.
 **`.shell` uses `overflow: clip`, not `hidden`.** `hidden` would make it a scroll
 container and break `position: sticky` on the navbar.
 
-**Colour tokens are contrast-checked.** `--ink-faint` (#5a7180) is deliberately
-darker than the reference's grey because it is used for small labels and dates
-and has to clear 4.5:1. `--ink-ghost` is the lighter tone, used only for the
-oversized hero line and the decorative marquee, where large-text rules apply.
-
-**Marquee bands are `aria-hidden`.** The real heading sits next to them, so a
-screen reader gets it once rather than six times.
+**Midnight & lime uses shared colour tokens.** The canvas is `#11151b`, raised
+surfaces `#1c232d`, primary text `#edf1f5`, and the accent `#c5f277`. The
+`theme.test.mjs` checks normal text, button states, badges and form errors against
+their actual opaque backgrounds for at least 4.5:1 contrast. Decorative marquee
+bands are not rendered. Native controls use the dark colour scheme.
 
 ## Accessibility
 

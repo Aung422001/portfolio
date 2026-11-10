@@ -54,7 +54,6 @@ export function Experience() {
   return (
     <Section
       id="experience"
-      marqueeText="Experience"
       className="border-t border-[var(--line)] py-16 sm:py-20"
     >
       <div className="flex flex-wrap items-end justify-between gap-6">
