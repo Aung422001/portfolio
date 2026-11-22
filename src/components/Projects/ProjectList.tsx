@@ -1,6 +1,7 @@
 import { ArrowUpRight, Code2, FileText } from "lucide-react";
 import type { Project } from "@/types";
 import { ProjectVisual } from "@/components/ui/ProjectVisual";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 export function ProjectList({ projects }: { projects: Project[] }) {
   return (
@@ -11,7 +12,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
       <ul className="mt-5 grid gap-6 md:grid-cols-2">
         {projects.map((project) => (
           <li key={project.slug} className="min-w-0">
-            <article className="flex h-full flex-col rounded-lg border border-[var(--line)] bg-[var(--surface)] p-5 sm:p-7">
+            <TiltCard className="h-full"><article className="flex h-full flex-col rounded-lg border border-[var(--line)] bg-[var(--surface)] p-5 sm:p-7">
               {project.image && (
                 <ProjectVisual
                   title={project.title}
@@ -62,7 +63,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                   </a>
                 )}
               </div>
-            </article>
+            </article></TiltCard>
           </li>
         ))}
       </ul>
