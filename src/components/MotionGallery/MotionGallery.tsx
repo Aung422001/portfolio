@@ -88,28 +88,56 @@ export function MotionGallery() {
     if (!scene) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
-    let raf = 0, current = 0;
-    const update = () => {
-      const rect = scene.getBoundingClientRect();
-      const range = Math.max(1, scene.offsetHeight - window.innerHeight);
-      const target = Math.max(0, Math.min(1, -rect.top / range));
-      current += (target - current) * .12;
+    let raf = 0;
+    let current = 0;
+    let target = 0;
+    let active = true;
+    const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+    const ease = (value: number) => value * value * (3 - 2 * value);
+
+    const paint = () => {
+      raf = 0;
+      if (!active) return;
+      current += (target - current) * 0.18;
+      if (Math.abs(target - current) < 0.0005) current = target;
+      const progress = current * (selected.length - 1);
       cardsRef.current.forEach((card, index) => {
         if (!card) return;
-        const phase = current * selected.length - index;
-        const ahead = phase < 0;
-        const y = ahead ? 70 + -phase * 18 : -Math.min(phase, 1.5) * 115;
-        const z = ahead ? -150 : -Math.min(phase, 1.5) * 250;
-        const rotate = ahead ? 12 : -Math.min(phase, 1.5) * 14;
-        const opacity = ahead ? Math.max(0, 1 + phase * 2.5) : Math.max(0, 1 - phase * 1.8);
-        card.style.transform = `translate3d(0,${y}%,${z}px) rotateX(${rotate}deg)`;
-        card.style.opacity = String(opacity);
-        card.style.pointerEvents = opacity > .6 ? "auto" : "none";
+        const distance = progress - index;
+        const proximity = clamp(Math.abs(distance), 0, 1);
+        const fade = 1 - ease(proximity);
+        const offset = distance < 0 ? (1 - ease(proximity)) * 0 : 0;
+        const translateY = distance < 0 ? 34 * ease(proximity) : -24 * ease(proximity);
+        const scale = 1 - 0.10 * ease(proximity);
+        const rotate = distance < 0 ? 8 * ease(proximity) : -7 * ease(proximity);
+        card.style.transform = `translate3d(0,${translateY + offset}%,0) scale(${scale}) rotateX(${rotate}deg)`;
+        card.style.opacity = String(fade);
+        card.style.pointerEvents = fade > 0.85 ? "auto" : "none";
+        card.style.visibility = fade < 0.005 ? "hidden" : "visible";
       });
-      raf = requestAnimationFrame(update);
+      if (current !== target) raf = requestAnimationFrame(paint);
     };
-    update();
-    return () => cancelAnimationFrame(raf);
+
+    const measure = () => {
+      const rect = scene.getBoundingClientRect();
+      const range = Math.max(1, scene.offsetHeight - window.innerHeight);
+      target = clamp(-rect.top / range, 0, 1);
+      if (!raf) raf = requestAnimationFrame(paint);
+    };
+    const observer = new IntersectionObserver((entries) => {
+      active = entries[0]?.isIntersecting ?? true;
+      if (active) measure();
+    }, { rootMargin: "200px" });
+    observer.observe(scene);
+    window.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    measure();
+    return () => {
+      cancelAnimationFrame(raf);
+      observer.disconnect();
+      window.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+    };
   }, []);
 
   return (
@@ -123,11 +151,11 @@ export function MotionGallery() {
           <p className="mt-8 font-mono text-xs uppercase tracking-[.18em] text-[var(--lagoon)]">Scroll to explore ↓</p>
         </div>
       </section>
-      <section ref={sceneRef} aria-label="Scroll-controlled project showcase" className="motion-gallery-scene relative h-[310vh]">
+      <section ref={sceneRef} aria-label="Scroll-controlled project showcase" className="motion-gallery-scene relative h-[380vh]">
         <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_center,#172a4a_0%,#0b1120_72%)] px-5" style={{ perspective: "1200px" }}>
           <div className="relative h-[min(57vh,500px)] w-full max-w-4xl" style={{ transformStyle: "preserve-3d" }}>
             {selected.map((project, index) => (
-              <article key={project.slug} ref={(node) => { cardsRef.current[index] = node; }} className="motion-gallery-card absolute inset-0 flex flex-col justify-between overflow-hidden rounded-3xl border border-[#5d7aaf] bg-[linear-gradient(140deg,#1b355d,#10182a_72%)] p-6 shadow-2xl shadow-black/50 sm:p-12" style={{ zIndex: selected.length - index, opacity: index === 0 ? 1 : 0, transform: index === 0 ? "none" : "translateY(100%)" }}>
+              <article key={project.slug} ref={(node) => { cardsRef.current[index] = node; }} className="motion-gallery-card absolute inset-0 flex flex-col justify-between overflow-hidden rounded-3xl border border-[#5d7aaf] bg-[linear-gradient(140deg,#1b355d,#10182a_72%)] p-6 shadow-2xl shadow-black/50 sm:p-12" style={{ zIndex: selected.length - index, opacity: index === 0 ? 1 : 0, transform: index === 0 ? "none" : "translateY(34%) scale(.9) rotateX(8deg)" }}>
                 <div className="flex items-start justify-between gap-3 font-mono text-xs uppercase tracking-[.2em] text-[#b4d1ff]"><span>0{index + 1} / 0{selected.length}</span><span>Selected work</span></div>
                 <div className="relative z-10">
                   <p className="mb-4 text-sm text-[#afc5e5]">{project.tagline}</p>
