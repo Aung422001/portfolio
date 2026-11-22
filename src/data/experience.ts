@@ -2,18 +2,16 @@ import type { ExperienceEntry, ProcessStep } from "@/types";
 
 export const experience: ExperienceEntry[] = [
   {
-    role: "Junior Developer",
+    role: "Full-Stack Web Development Intern",
     company: "Tri-Apex Trading Group",
-    period: "January 2026 — March 2026",
+    period: "January 2 — April 9, 2026 (14 weeks)",
     summary:
-      "Built the responsive frontend for a full-stack e-commerce platform in Next.js, React and TypeScript, covering the product catalogue, shopping cart and checkout workflows.",
+      "Contributed to a 3D-printer e-commerce platform during a 14-week remote internship, building responsive storefront workflows and integrating application data.",
     responsibilities: [
       "Built responsive frontend interfaces in Next.js and React",
-      "Developed an AI customer-support chat widget on the Google Gemini API",
       "Managed client-side state with Zustand",
       "Handled data fetching with TanStack Query and Axios",
       "Worked across a multi-page application",
-      "Used AI-assisted development to prototype features and keep components consistent",
     ],
   },
 ];
