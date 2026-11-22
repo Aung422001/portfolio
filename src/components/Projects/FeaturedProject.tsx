@@ -3,11 +3,12 @@ import type { Project } from "@/types";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { ProjectVisual } from "@/components/ui/ProjectVisual";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 export function FeaturedProject({ project }: { project: Project }) {
   return (
     <Reveal as="article" className="mt-12">
-      <div className="overflow-hidden rounded-lg border border-[var(--line)] border-t-2 border-t-[var(--lagoon)] bg-[var(--surface)]">
+      <TiltCard><div className="overflow-hidden rounded-lg border border-[var(--line)] border-t-2 border-t-[var(--lagoon)] bg-[var(--surface)]">
         <div className="grid lg:grid-cols-[1.05fr_1fr]">
           <div className="order-2 p-7 sm:p-9 lg:order-1 lg:p-11">
             <p className="text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
@@ -114,7 +115,7 @@ export function FeaturedProject({ project }: { project: Project }) {
             </p>
           </div>
         )}
-      </div>
+      </div></TiltCard>
     </Reveal>
   );
 }
