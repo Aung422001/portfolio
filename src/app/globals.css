@@ -243,3 +243,12 @@ body {
 .terminal-answer { animation:hero-story-enter .6s ease 1.05s both; }
 @keyframes terminal-type { to { width:6ch; } }
 @media (prefers-reduced-motion:reduce) { .project-tilt { transform:none!important; transition:none!important; will-change:auto; } .project-tilt::after { display:none; } .skill-chip { transition:none; } .terminal-command { width:auto; animation:none!important; } }
+
+
+/* Combined motion gallery: static accessible layout for reduced-motion users. */
+@media (prefers-reduced-motion: reduce) {
+  .motion-gallery-scene { height:auto!important; }
+  .motion-gallery-scene > div { position:relative!important; height:auto!important; padding-block:4rem; }
+  .motion-gallery-scene > div > div { display:grid; gap:1.5rem; height:auto!important; transform:none!important; }
+  .motion-gallery-card { position:relative!important; min-height:360px; opacity:1!important; transform:none!important; pointer-events:auto!important; }
+}
