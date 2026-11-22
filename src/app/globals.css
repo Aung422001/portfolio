@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
-/* Midnight & lime. Shared tokens also cover form and interaction states. */
+/* Midnight Engineering: navy & cool blue. Shared tokens also cover form and interaction states. */
 
 @theme {
-  --color-lagoon: #c5f277;
-  --color-lagoon-deep: #d7fa9f;
-  --color-shell: #11151b;
-  --color-shell-sunk: #1c232d;
-  --color-ink: #edf1f5;
-  --color-ink-soft: #abb5c3;
-  --color-ink-faint: #abb5c3;
-  --color-line: #343e4b;
+  --color-lagoon: #74a9ff;
+  --color-lagoon-deep: #a6c8ff;
+  --color-shell: #0b1120;
+  --color-shell-sunk: #151f32;
+  --color-ink: #e8edf5;
+  --color-ink-soft: #a8b8cf;
+  --color-ink-faint: #a8b8cf;
+  --color-line: #34445e;
 
   --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 
@@ -19,17 +19,17 @@
 
 :root {
   color-scheme: dark;
-  --ink: #edf1f5;
-  --ink-soft: #abb5c3;
-  --ink-faint: #abb5c3;
-  --ink-ghost: #abb5c3;
-  --line: #343e4b;
-  --shell: #11151b;
-  --surface: #1c232d;
-  --surface-soft: #293628;
-  --lagoon: #c5f277;
-  --accent-hover: #d7fa9f;
-  --on-accent: #11151b;
+  --ink: #e8edf5;
+  --ink-soft: #a8b8cf;
+  --ink-faint: #a8b8cf;
+  --ink-ghost: #a8b8cf;
+  --line: #34445e;
+  --shell: #0b1120;
+  --surface: #151f32;
+  --surface-soft: #1b2d48;
+  --lagoon: #74a9ff;
+  --accent-hover: #a6c8ff;
+  --on-accent: #0b1120;
   --error: #fca5a5;
 }
 
