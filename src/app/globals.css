@@ -230,3 +230,16 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero-role { width: auto; border-right: 0; animation: none !important; }
 }
+
+
+/* Portfolio motion experiments — progressive enhancement and reduced-motion safe */
+.project-tilt { position:relative; height:100%; transform:perspective(1100px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg)); transform-style:preserve-3d; transition:transform .28s cubic-bezier(.2,.8,.2,1); will-change:transform; }
+.project-tilt::after { content:""; position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:inherit; opacity:0; background:radial-gradient(360px circle at var(--glow-x,50%) var(--glow-y,50%),rgba(116,169,255,.13),transparent 65%); transition:opacity .25s; }
+@media (hover:hover) and (pointer:fine) { .project-tilt:hover::after { opacity:1; } .project-tilt:hover { box-shadow:0 22px 55px rgba(0,0,0,.2); } }
+.skill-chip { transition:transform .24s ease,background .24s ease,color .24s ease; }
+@media (hover:hover) { .skill-chip:hover { transform:translateY(-4px); background:var(--surface-soft); color:var(--ink); } }
+.timeline-entry::before { content:""; position:absolute; width:12px; height:12px; left:-7px; top:37px; border-radius:50%; background:var(--lagoon); box-shadow:0 0 0 5px var(--shell),0 0 18px rgba(116,169,255,.45); }
+.terminal-command { display:inline-block; vertical-align:bottom; overflow:hidden; white-space:nowrap; width:0; animation:terminal-type .55s steps(6,end) .42s both; }
+.terminal-answer { animation:hero-story-enter .6s ease 1.05s both; }
+@keyframes terminal-type { to { width:6ch; } }
+@media (prefers-reduced-motion:reduce) { .project-tilt { transform:none!important; transition:none!important; will-change:auto; } .project-tilt::after { display:none; } .skill-chip { transition:none; } .terminal-command { width:auto; animation:none!important; } }
