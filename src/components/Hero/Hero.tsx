@@ -18,6 +18,7 @@ export function Hero() {
             <Sparkles size={14} aria-hidden className="text-[var(--lagoon)]" />
             Hello, welcome to my portfolio
           </p>
+          <div className="hero-story hero-story-2 mt-6 max-w-sm rounded-lg border border-[var(--line)] bg-[var(--surface)]/50 px-4 py-3 font-mono text-xs text-[var(--ink-soft)]" aria-label="Developer terminal introduction"><span className="text-[var(--lagoon)]">$</span> <span className="terminal-command">whoami</span><span className="terminal-answer block pt-1 text-[var(--ink)]">Aung Kyaw Hein / Developer</span></div>
           <p className="hero-story hero-story-2 mt-8 text-sm font-medium tracking-wide text-[var(--ink-soft)]">I&apos;m</p>
           <h1 id="hero-heading" className="hero-story hero-story-3 h-display mt-2 text-[clamp(3.3rem,8vw,6.8rem)] leading-[0.99]">
             Aung Kyaw<br /><span className="text-[var(--lagoon)]">Hein.</span>
