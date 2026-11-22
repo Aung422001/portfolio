@@ -4,13 +4,13 @@ export const profile = {
   name: "Aung Kyaw Hein",
   firstName: "Aung",
   initials: "AK",
-  role: "Frontend Developer",
+  role: "Frontend & Full-Stack Developer",
   intro:
     "I build modern, responsive interfaces with React, Next.js and TypeScript — and the API integration behind them.",
   heroSupport:
     "React, Next.js and TypeScript developer with professional e-commerce experience. I build storefronts, dashboards and tools that connect useful interfaces to real APIs.",
   location: "Chiang Mai, Thailand",
-  openTo: "Thailand, Malaysia and Singapore",
+  openTo: "Thailand, Singapore, Germany, UAE and Europe (subject to work authorization)",
   availability: "Available for opportunities",
   email: "aungkyawhein422001@gmail.com",
   github: "https://github.com/Aung422001",
@@ -30,7 +30,7 @@ export const profile = {
 } as const;
 
 export const aboutBody = [
-  "I graduated from Parul University in June 2026 with a B.Tech in Computer Science and Engineering. At Tri-Apex Trading Group, I spent three months building product catalogue, cart and checkout interfaces with Next.js and TypeScript.",
+  "I graduated from Parul University in June 2026 with a B.Tech in Computer Science and Engineering. During a 14-week remote internship at Triapex Trading Group, I worked on product catalogue, cart and checkout interfaces with Next.js and TypeScript.",
   "My independent projects explore different interface problems: tracking job applications in ApplyTrail, scheduling language reviews in Recursion, and displaying live device updates in an IoT dashboard. I'm looking for a frontend role where I can contribute and learn from an experienced team.",
 ];
 
@@ -50,8 +50,7 @@ export const aboutTech = [
 export const stats: Stat[] = [
   { value: "3", label: "Months professional experience" },
   { value: "5", label: "Independent projects" },
-  { value: "218", label: "Automated tests written" },
-  { value: "10+", label: "Technologies used" },
+  { value: "2026", label: "CSE graduate" },
 ];
 
 export const navItems: NavItem[] = [
