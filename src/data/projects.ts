@@ -111,6 +111,17 @@ export const projects: Project[] = [
     year: "2025",
   },
   {
+    slug: "a-small-journey",
+    title: "A Small Journey — Browser Game",
+    tagline: "Canvas-based exploration game with a quest system",
+    description:
+      "Built a dependency-free browser game set in a fictional Myanmar-inspired town. Players ride a bicycle, explore neighborhoods, help a neighbor and deliver a parcel. Includes keyboard and mobile controls, a map, journal, and automated tests for quest and movement logic.",
+    stack: ["JavaScript", "HTML Canvas", "Node.js", "Node Test Runner"],
+    features: ["Top-down exploration", "Quest and dialogue interactions", "Mobile touch controls", "Automated gameplay logic tests"],
+    links: { github: "https://github.com/Aung422001/a-small-journey" },
+    year: "2026",
+  },
+  {
     slug: "cryptoq",
     title: "CryptoQ",
     tagline: "Strategy builder and backtester",
