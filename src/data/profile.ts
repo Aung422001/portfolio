@@ -48,8 +48,8 @@ export const aboutTech = [
 ];
 
 export const stats: Stat[] = [
-  { value: "3", label: "Months professional experience" },
-  { value: "5", label: "Independent projects" },
+  { value: "14", label: "Weeks of internship experience" },
+  { value: "6", label: "Independent projects" },
   { value: "2026", label: "CSE graduate" },
 ];
 
