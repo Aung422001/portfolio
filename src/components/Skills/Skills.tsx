@@ -27,7 +27,7 @@ export function Skills() {
               {group.items.map((item) => (
                 <li
                   key={item}
-                  className="rounded-lg bg-[var(--surface)] px-2.5 py-1.5 text-[0.82rem] text-[var(--ink-soft)]"
+                  className="skill-chip rounded-lg bg-[var(--surface)] px-2.5 py-1.5 text-[0.82rem] text-[var(--ink-soft)]"
                 >
                   {item}
                 </li>
