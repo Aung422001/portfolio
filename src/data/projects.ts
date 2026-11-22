@@ -3,6 +3,7 @@ import type { Project } from "@/types";
 export const projects: Project[] = [
   {
     slug: "merbolo",
+    featured: true,
     title: "Merbolo Stationery Store",
     tagline: "Full-stack storefront and admin dashboard",
     description:
@@ -37,7 +38,6 @@ export const projects: Project[] = [
   },
   {
     slug: "applytrail",
-    featured: true,
     title: "ApplyTrail",
     tagline: "Job application tracker with a companion browser extension",
     badge: "Latest project",
@@ -56,7 +56,7 @@ export const projects: Project[] = [
     tagline: "Frontend for a full-stack commerce platform",
     badge: "Professional work",
     description:
-      "Built product catalogue, cart and checkout interfaces during a three-month junior developer role. Used TanStack Query for API data, Zustand for shared client state, and the Gemini API for a customer-support chat widget.",
+      "Built product catalogue, cart and checkout interfaces during a 14-week full-stack web development internship. Used TanStack Query for API data, Zustand for shared client state, and REST API integration for commerce workflows.",
     demoNote: "Hosted on Render; the first visit may need time to wake the service. Project notes and a screenshot are available while it starts.",
     stack: [
       "Next.js",
@@ -66,7 +66,6 @@ export const projects: Project[] = [
       "Zustand",
       "TanStack Query",
       "Axios",
-      "Google Gemini API",
     ],
     links: {
       live: "https://triapex-web.onrender.com/",
