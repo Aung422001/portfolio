@@ -9,7 +9,7 @@ import type { ExperienceEntry } from "@/types";
 
 function EntryRow({ entry }: { entry: ExperienceEntry }) {
   return (
-    <Reveal as="li" className="border-t border-[var(--line)] py-8">
+    <Reveal as="li" className="timeline-entry relative border-l-2 border-[var(--line)] py-8 pl-7 sm:pl-10">
       <div className="grid gap-5 lg:grid-cols-[1fr_1.4fr] lg:gap-12">
         <div>
           <h3 className="text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink)]">
