@@ -21,46 +21,64 @@ export function MotionGallery() {
     let raf = 0;
     let w = 1, h = 1, tick = 0;
     let px = 0, py = 0, tx = 0, ty = 0;
-    let visible = true;
+    let visible = false;
+    let lastTime = 0;
+    let rings = 17, steps = 95;
+    let vertices: number[][][] = [];
+    let glow: CanvasGradient;
+    let cx = 0, cy = 0, radius = 0;
     const resize = () => {
       const rect = hero.getBoundingClientRect();
       w = Math.max(1, rect.width); h = Math.max(1, rect.height);
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, w < 700 ? 1 : 1.5);
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      rings = w < 700 ? 12 : 17;
+      steps = w < 700 ? 64 : 95;
+      vertices = Array.from({ length: rings }, (_, j) => {
+        const a = j / rings * Math.PI * 2;
+        return Array.from({ length: steps + 1 }, (_, i) => {
+          const b = i / steps * Math.PI * 2;
+          const r = 1.05 + .36 * Math.cos(b);
+          return [r * Math.cos(a), r * Math.sin(a), .36 * Math.sin(b)];
+        });
+      });
+      cx = w * (w < 700 ? .68 : .73); cy = h * .49;
+      radius = Math.min(w * (w < 700 ? .32 : .24), h * .39, 230);
+      glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.8);
+      glow.addColorStop(0, "rgba(56,109,206,.14)");
+      glow.addColorStop(1, "rgba(56,109,206,0)");
+      if (reduced) render(0);
     };
     const pointer = (event: PointerEvent) => {
+      if (reduced || event.pointerType !== "mouse") return;
       const rect = hero.getBoundingClientRect();
       tx = ((event.clientX - rect.left) / rect.width - .5) * 2;
       ty = ((event.clientY - rect.top) / rect.height - .5) * 2;
     };
-    const observer = new IntersectionObserver((entries) => { visible = entries[0]?.isIntersecting ?? true; });
-    observer.observe(hero);
-    const render = () => {
-      raf = requestAnimationFrame(render);
-      if (!visible) return;
+    const render = (time: number) => {
+      raf = 0;
+      if (!reduced && (!visible || document.hidden)) return;
+      const dt = lastTime ? Math.min(time - lastTime, 50) : 16.67;
+      lastTime = time;
       ctx.clearRect(0, 0, w, h);
-      px += (tx - px) * .045;
-      py += (ty - py) * .045;
-      if (!reduced) tick += .007;
-      const cx = w * (w < 700 ? .68 : .73), cy = h * .49;
-      const radius = Math.min(w * (w < 700 ? .32 : .24), h * .39, 230);
-      const rings = 17, steps = 95;
+      const blend = 1 - Math.pow(.955, dt / 16.67);
+      px += (tx - px) * blend;
+      py += (ty - py) * blend;
+      if (!reduced) tick += .007 * dt / 16.67;
+      const ay = tick + px * .38, ax = .45 + Math.sin(tick * .5) * .22 - py * .3;
+      const cosY = Math.cos(ay), sinY = Math.sin(ay), cosX = Math.cos(ax), sinX = Math.sin(ax);
       ctx.lineWidth = 1;
       for (let j = 0; j < rings; j++) {
         const a = j / rings * Math.PI * 2;
         ctx.beginPath();
         for (let i = 0; i <= steps; i++) {
-          const b = i / steps * Math.PI * 2;
-          const x = (1.05 + .36 * Math.cos(b)) * Math.cos(a);
-          const y = (1.05 + .36 * Math.cos(b)) * Math.sin(a);
-          const z = .36 * Math.sin(b);
-          const ay = tick + px * .38, ax = .45 + Math.sin(tick * .5) * .22 - py * .3;
-          const xr = x * Math.cos(ay) + z * Math.sin(ay);
-          const zr = -x * Math.sin(ay) + z * Math.cos(ay);
-          const yr = y * Math.cos(ax) - zr * Math.sin(ax);
-          const depth = y * Math.sin(ax) + zr * Math.cos(ax);
+          const [x, y, z] = vertices[j][i];
+          const xr = x * cosY + z * sinY;
+          const zr = -x * sinY + z * cosY;
+          const yr = y * cosX - zr * sinX;
+          const depth = y * sinX + zr * cosX;
           const scale = 2.8 / (2.8 + depth * .3);
           const sx = cx + xr * radius * .65 * scale;
           const sy = cy + yr * radius * .65 * scale;
@@ -69,18 +87,23 @@ export function MotionGallery() {
         ctx.strokeStyle = `rgba(116,169,255,${.14 + .24 * (1 + Math.sin(a + tick)) / 2})`;
         ctx.stroke();
       }
-      const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.8);
-      glow.addColorStop(0, "rgba(56,109,206,.14)");
-      glow.addColorStop(1, "rgba(56,109,206,0)");
       ctx.fillStyle = glow;
       ctx.fillRect(cx - radius * 1.8, cy - radius * 1.8, radius * 3.6, radius * 3.6);
+      if (!reduced) raf = requestAnimationFrame(render);
     };
+    const sync = () => {
+      if (!reduced && visible && !document.hidden) {
+        if (!raf) { lastTime = 0; raf = requestAnimationFrame(render); }
+      } else { cancelAnimationFrame(raf); raf = 0; }
+    };
+    const observer = new IntersectionObserver((entries) => { visible = entries[0]?.isIntersecting ?? false; sync(); });
     resize();
-    render();
+    observer.observe(hero);
+    document.addEventListener("visibilitychange", sync);
     const ro = new ResizeObserver(resize);
     ro.observe(hero);
     hero.addEventListener("pointermove", pointer);
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); observer.disconnect(); hero.removeEventListener("pointermove", pointer); };
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); observer.disconnect(); hero.removeEventListener("pointermove", pointer); document.removeEventListener("visibilitychange", sync); };
   }, []);
 
   useEffect(() => {
@@ -91,14 +114,18 @@ export function MotionGallery() {
     let raf = 0;
     let current = 0;
     let target = 0;
-    let active = true;
+    let active = false;
+    let start = 0, range = 1, lastTime = 0;
     const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
     const ease = (value: number) => value * value * (3 - 2 * value);
 
-    const paint = () => {
+    const paint = (time: number) => {
       raf = 0;
       if (!active) return;
-      current += (target - current) * 0.18;
+      target = clamp((window.scrollY - start) / range, 0, 1);
+      const dt = lastTime ? Math.min(time - lastTime, 50) : 16.67;
+      lastTime = time;
+      current += (target - current) * (1 - Math.pow(.82, dt / 16.67));
       if (Math.abs(target - current) < 0.0005) current = target;
       const progress = current * (selected.length - 1);
       cardsRef.current.forEach((card, index) => {
@@ -106,11 +133,10 @@ export function MotionGallery() {
         const distance = progress - index;
         const proximity = clamp(Math.abs(distance), 0, 1);
         const fade = 1 - ease(proximity);
-        const offset = distance < 0 ? (1 - ease(proximity)) * 0 : 0;
         const translateY = distance < 0 ? 34 * ease(proximity) : -24 * ease(proximity);
         const scale = 1 - 0.10 * ease(proximity);
         const rotate = distance < 0 ? 8 * ease(proximity) : -7 * ease(proximity);
-        card.style.transform = `translate3d(0,${translateY + offset}%,0) scale(${scale}) rotateX(${rotate}deg)`;
+        card.style.transform = `translate3d(0,${translateY}%,0) scale(${scale}) rotateX(${rotate}deg)`;
         card.style.opacity = String(fade);
         card.style.pointerEvents = fade > 0.85 ? "auto" : "none";
         card.style.visibility = fade < 0.005 ? "hidden" : "visible";
@@ -118,24 +144,29 @@ export function MotionGallery() {
       if (current !== target) raf = requestAnimationFrame(paint);
     };
 
+    const schedule = () => { if (active && !raf) { lastTime = 0; raf = requestAnimationFrame(paint); } };
     const measure = () => {
       const rect = scene.getBoundingClientRect();
-      const range = Math.max(1, scene.offsetHeight - window.innerHeight);
-      target = clamp(-rect.top / range, 0, 1);
-      if (!raf) raf = requestAnimationFrame(paint);
+      start = rect.top + window.scrollY;
+      range = Math.max(1, scene.offsetHeight - (scene.firstElementChild?.clientHeight ?? window.innerHeight));
+      schedule();
     };
     const observer = new IntersectionObserver((entries) => {
       active = entries[0]?.isIntersecting ?? true;
-      if (active) measure();
+      if (active) { measure(); current = clamp((window.scrollY - start) / range, 0, 1); }
+      else { cancelAnimationFrame(raf); raf = 0; }
     }, { rootMargin: "200px" });
     observer.observe(scene);
-    window.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("scroll", schedule, { passive: true });
+    const ro = new ResizeObserver(measure);
+    ro.observe(scene);
     window.addEventListener("resize", measure);
     measure();
     return () => {
       cancelAnimationFrame(raf);
       observer.disconnect();
-      window.removeEventListener("scroll", measure);
+      ro.disconnect();
+      window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", measure);
     };
   }, []);
