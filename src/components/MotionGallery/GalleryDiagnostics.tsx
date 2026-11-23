@@ -18,7 +18,7 @@ export function GalleryDiagnostics({ sceneRef }: { sceneRef: RefObject<HTMLEleme
   const start = () => {
     const scene = sceneRef.current;
     if (!scene || running) return;
-    if (matchMedia("(prefers-reduced-motion: reduce), (max-height: 520px)").matches) {
+    if (matchMedia("(prefers-reduced-motion: reduce), (max-height: 520px), (max-width: 359px)").matches) {
       setStatus("Motion disabled: benchmark unavailable");
       return;
     }

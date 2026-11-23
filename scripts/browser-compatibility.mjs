@@ -8,6 +8,7 @@ const base = 'http://127.0.0.1:3100';
 const cases = [
   { label: 'desktop', width: 1440, height: 900 },
   { label: 'mobile portrait', width: 390, height: 844 },
+  { label: 'compact portrait', width: 360, height: 640 },
   { label: 'small portrait', width: 320, height: 568 },
   { label: 'landscape', width: 844, height: 390 },
   { label: 'reduced motion', width: 390, height: 844, reducedMotion: 'reduce' },
@@ -51,7 +52,7 @@ async function runCase(config) {
     assert.match(cardNames[0], /Tri-Apex/);
     assert.match(cardNames[1], /Merbolo/);
     assert.match(cardNames[2], /ApplyTrail/);
-    const staticMode = reducedMotion === 'reduce' || height <= 520;
+    const staticMode = reducedMotion === 'reduce' || height <= 520 || width <= 359;
     if (!staticMode) await check('scroll transitions select each card in the correct order and reverse', async () => {
       for (const index of [0, 1, 2, 1, 0]) {
         await page.evaluate(index => {
@@ -68,8 +69,9 @@ async function runCase(config) {
         assert.ok(await card.evaluate(element => element.scrollHeight <= element.clientHeight + 1), `Card ${index + 1} content is clipped at ${width}×${height}`);
       }
     });
-    if (staticMode) await check('short viewport/reduced motion exposes every static project', async () => {
+    if (staticMode) await check('small viewport/reduced motion exposes every unclipped static project', async () => {
       await page.waitForFunction(() => [...document.querySelectorAll('.motion-gallery-card')].every(card => !card.inert && getComputedStyle(card).position === 'relative' && getComputedStyle(card).visibility === 'visible'));
+      assert.ok(await page.locator('.motion-gallery-card').evaluateAll(cards => cards.every(card => card.scrollHeight <= card.clientHeight + 1)), 'Static card content is clipped');
     });
     await check('manual pause exposes all cards and resume restores correct mode', async () => {
       const toggle = page.getByRole('button', { name: 'Pause showcase motion' });

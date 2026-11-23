@@ -260,7 +260,7 @@ body {
   .motion-gallery-card { padding: 1.25rem; }
   .motion-gallery-card h3 { font-size: clamp(1.8rem, 7vw, 3rem); }
 }
-@media (prefers-reduced-motion: reduce), (max-height: 520px) {
+@media (prefers-reduced-motion: reduce), (max-height: 520px), (max-width: 359px) {
   .motion-gallery-scene { height:auto!important; }
   .motion-gallery-scene > div { position:relative!important; height:auto!important; padding-block:4rem; }
   .motion-gallery-scene > div > div { display:grid; gap:1.5rem; height:auto!important; transform:none!important; }

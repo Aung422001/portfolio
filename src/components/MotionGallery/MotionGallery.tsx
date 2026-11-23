@@ -142,7 +142,7 @@ export function MotionGallery() {
   useEffect(() => {
     const scene = sceneRef.current;
     if (!scene) return;
-    const staticLayout = window.matchMedia("(prefers-reduced-motion: reduce), (max-height: 520px)");
+    const staticLayout = window.matchMedia("(prefers-reduced-motion: reduce), (max-height: 520px), (max-width: 359px)");
     const isStatic = () => paused || staticLayout.matches;
     const compactLayout = window.matchMedia("(max-width: 699px)");
     let raf = 0;
