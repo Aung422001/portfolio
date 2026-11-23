@@ -45,7 +45,7 @@ export function Navbar() {
         <a
           href="#home"
           className="mr-auto flex items-center gap-2.5 rounded-full"
-          aria-label={`${profile.name} — home`}
+          aria-label={`${profile.initials} ${profile.name} — home`}
         >
           <span className="grid h-8 w-8 place-items-center rounded-md bg-[var(--lagoon)] text-[0.7rem] font-semibold tracking-tight text-[var(--on-accent)]">
             {profile.initials}

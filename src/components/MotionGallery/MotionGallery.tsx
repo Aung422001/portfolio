@@ -296,7 +296,7 @@ export function MotionGallery() {
                 </div>
                 <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
                   <span className="font-mono text-xs text-[#9ec3ff]">{project.stack.slice(0, 4).join(" / ")}</span>
-                  {project.links.live && <a href={project.links.live} aria-label={`View ${project.title} live project (opens in new tab)`} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#7ea7df] px-4 py-2 text-sm font-medium transition-colors hover:bg-[#284d7a]">View live project ↗</a>}
+                  {project.links.live && <a href={project.links.live} aria-label={`View live project ↗: ${project.title} (opens in new tab)`} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#7ea7df] px-4 py-2 text-sm font-medium transition-colors hover:bg-[#284d7a]">View live project ↗</a>}
                 </div>
               </article>
             ))}
