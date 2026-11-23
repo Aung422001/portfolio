@@ -246,10 +246,9 @@ body {
 
 
 /* Combined motion gallery: static accessible layout for reduced-motion users. */
-.motion-gallery-card > div { opacity: var(--gallery-content-opacity, 1); }
+.motion-gallery-track { overflow: clip; border-radius: 1.5rem; }
+.motion-gallery-card { will-change: transform; }
 @media (max-width: 699px) {
-  .motion-gallery-track { overflow: clip; border-radius: 1.5rem; transform-style: flat !important; }
-  .motion-gallery-card { will-change: transform; }
   .motion-gallery-card { padding: 1.25rem; }
   .motion-gallery-card h3 { font-size: clamp(1.8rem, 7vw, 3rem); }
 }

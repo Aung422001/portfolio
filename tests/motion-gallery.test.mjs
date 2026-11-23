@@ -8,7 +8,7 @@ const source = fs.readFileSync(new URL('../src/components/MotionGallery/motionMa
 const { outputText } = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } });
 const exports = {};
 vm.runInNewContext(outputText, { exports });
-const { smoothProgress, cardOpacity, stackedCardPose } = exports;
+const { smoothProgress, stackedCardPose, frameStats } = exports;
 
 test('smoothing converges identically over the same elapsed time at 60, 90, 120 and 144Hz', () => {
   const results = [60, 90, 120, 144].map(hz => {
@@ -22,7 +22,7 @@ test('smoothing converges identically over the same elapsed time at 60, 90, 120 
   assert.equal(smoothProgress(.8, .2, 1000), .2);
 });
 
-test('mobile cards slide over an opaque outgoing card without blank midpoints', () => {
+test('desktop and mobile cards slide over an opaque outgoing card without blank midpoints', () => {
   for (let i = 0; i < 100; i++) {
     const progress = i / 100;
     const outgoing = stackedCardPose(progress);
@@ -37,6 +37,8 @@ test('mobile cards slide over an opaque outgoing card without blank midpoints', 
   }
   assert.equal(stackedCardPose(.5).translateY, 0);
   assert.equal(stackedCardPose(-.5).translateY, 50);
+  assert.equal(stackedCardPose(-.5).tilt, 3.5);
+  assert.equal(stackedCardPose(.5).tilt, 0);
   assert.equal(stackedCardPose(1).visible, false);
   assert.equal(stackedCardPose(0).visible, true);
 });
@@ -51,13 +53,11 @@ test('touch smoothing converges faster without depending on refresh frequency', 
   assert.ok(samples.every(value => value === 1));
 });
 
-test('adjacent card surfaces crossfade while text does not overlap', () => {
-  for (let i = 0; i <= 100; i++) {
-    const p = i / 100;
-    const outgoing = cardOpacity(p), incoming = cardOpacity(p - 1);
-    assert.ok(Math.abs(outgoing.surface + incoming.surface - 1) < 1e-9);
-    assert.ok(outgoing.content === 0 || incoming.content === 0);
-  }
-  assert.equal(cardOpacity(0).content, 1);
-  assert.equal(cardOpacity(1).surface, 0);
+test('frame metrics distinguish normal intervals from missed refresh slots', () => {
+  const result = frameStats([10, 10, 20, 30, 10], 10);
+  assert.equal(result.frames, 5);
+  assert.equal(result.missed, 3);
+  assert.equal(result.fps, 62.5);
+  assert.equal(result.p95, 30);
+  assert.equal(result.max, 30);
 });

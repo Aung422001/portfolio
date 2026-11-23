@@ -2,12 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { projects } from "@/data/projects";
-import { cardOpacity, smoothProgress, stackedCardPose } from "./motionMath";
+import { smoothProgress, stackedCardPose } from "./motionMath";
+import { GalleryDiagnostics } from "./GalleryDiagnostics";
 
 const selected = ["triapex", "merbolo", "applytrail"].map((slug) => projects.find((p) => p.slug === slug)!).filter(Boolean);
 const FRAME_MS = 1000 / 60;
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
-const ease = (value: number) => value * value * (3 - 2 * value);
 
 // Build once per detail level, not per resize or frame.
 function makeGeometry(rings: number, steps: number) {
@@ -156,34 +156,19 @@ export function MotionGallery() {
       previousProgress = progress;
       const compact = compactLayout.matches;
       const nearest = Math.round(progress);
-      const nextIndex = compact ? nearest : cardOpacity(progress - nearest).content > .35 ? nearest : -1;
+      const nextIndex = nearest;
       cardsRef.current.forEach((card, index) => {
         if (!card) return;
         const distance = clamp(progress - index, -1, 1);
-        const proximity = clamp(Math.abs(distance), 0, 1);
-        const eased = ease(proximity);
-        // Crossfade the surfaces, but never overlay two sets of readable text.
-        const { surface: fade, content: contentFade } = cardOpacity(distance);
-        const translateY = distance < 0 ? 24 * eased : -18 * eased;
-        // On mobile the outgoing card is stationary, so avoid rewriting its
-        // styles on every scroll frame while the incoming card covers it.
-        const poseKey = compact && distance >= 0 && distance < 1 ? 0 : distance;
+        // Keep the outgoing surface fully opaque and stationary until covered.
+        const poseKey = distance >= 0 && distance < 1 ? 0 : distance;
         if (paintedDistances[index] !== poseKey) {
           paintedDistances[index] = poseKey;
-          if (compact) {
-            const pose = stackedCardPose(distance);
-            card.style.transform = `translate3d(0,${pose.translateY}%,0)`;
-            card.style.opacity = pose.visible ? "1" : "0";
-            card.style.visibility = pose.visible ? "visible" : "hidden";
-            card.style.setProperty("--gallery-content-opacity", "1");
-            card.style.zIndex = String(index + 1);
-          } else {
-            card.style.transform = `translate3d(0,${translateY}%,0) scale(${1 - .10 * eased}) rotateX(${(distance < 0 ? 8 : -7) * eased}deg)`;
-            card.style.opacity = String(fade);
-            card.style.setProperty("--gallery-content-opacity", String(contentFade));
-            card.style.visibility = fade < .005 ? "hidden" : "visible";
-            card.style.zIndex = String(selected.length - index);
-          }
+          const pose = stackedCardPose(distance);
+          card.style.transform = compact ? `translate3d(0,${pose.translateY}%,0)` : `translate3d(0,${pose.translateY}%,0) perspective(1200px) rotateX(${pose.tilt}deg) scale(${pose.scale})`;
+          card.style.opacity = pose.visible ? "1" : "0";
+          card.style.visibility = pose.visible ? "visible" : "hidden";
+          card.style.zIndex = String(index + 1);
         }
         if (nextIndex !== selectedIndex) {
           const interactive = index === nextIndex;
@@ -285,7 +270,7 @@ export function MotionGallery() {
       </section>
       <section ref={sceneRef} tabIndex={-1} aria-label="Scroll-controlled project showcase" className="motion-gallery-scene relative h-[380svh]">
         <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_center,#172a4a_0%,#0b1120_72%)] px-5" style={{ perspective: "1200px" }}>
-          <div className="motion-gallery-track relative h-[min(78svh,540px)] w-full max-w-4xl" style={{ transformStyle: "preserve-3d" }}>
+          <div className="motion-gallery-track relative h-[min(78svh,540px)] w-full max-w-4xl">
             {selected.map((project, index) => (
               <article key={project.slug} ref={(node) => { cardsRef.current[index] = node; }} className="motion-gallery-card absolute inset-0 flex flex-col justify-between gap-3 overflow-hidden rounded-3xl border border-[#5d7aaf] bg-[linear-gradient(140deg,#1b355d,#10182a_72%)] p-6 shadow-2xl shadow-black/50 sm:p-8 lg:p-10" style={{ zIndex: selected.length - index, visibility: index === 0 ? "visible" : "hidden", opacity: index === 0 ? 1 : 0, transform: index === 0 ? "none" : "translateY(34%) scale(.9) rotateX(8deg)" }}>
                 <div className="flex items-start justify-between gap-3 font-mono text-xs uppercase tracking-[.2em] text-[#b4d1ff]"><span>0{index + 1} / 0{selected.length}</span><span>Selected work</span></div>
@@ -305,6 +290,7 @@ export function MotionGallery() {
         </div>
       </section>
       <div className="px-6 py-12 text-center font-mono text-xs uppercase tracking-[.2em] text-[var(--lagoon)]">Explore the full project details below ↓</div>
+      <GalleryDiagnostics sceneRef={sceneRef} />
     </div>
   );
 }
