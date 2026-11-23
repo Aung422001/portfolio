@@ -263,13 +263,13 @@ export function MotionGallery() {
       </section>
       <section ref={sceneRef} tabIndex={-1} aria-label="Scroll-controlled project showcase" className="motion-gallery-scene relative h-[380svh]">
         <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_center,#172a4a_0%,#0b1120_72%)] px-5" style={{ perspective: "1200px" }}>
-          <div className="relative h-[min(78svh,500px)] w-full max-w-4xl" style={{ transformStyle: "preserve-3d" }}>
+          <div className="relative h-[min(78svh,540px)] w-full max-w-4xl" style={{ transformStyle: "preserve-3d" }}>
             {selected.map((project, index) => (
-              <article key={project.slug} ref={(node) => { cardsRef.current[index] = node; }} className="motion-gallery-card absolute inset-0 flex flex-col justify-between gap-3 overflow-hidden rounded-3xl border border-[#5d7aaf] bg-[linear-gradient(140deg,#1b355d,#10182a_72%)] p-6 shadow-2xl shadow-black/50 sm:p-12" style={{ zIndex: selected.length - index, visibility: index === 0 ? "visible" : "hidden", opacity: index === 0 ? 1 : 0, transform: index === 0 ? "none" : "translateY(34%) scale(.9) rotateX(8deg)" }}>
+              <article key={project.slug} ref={(node) => { cardsRef.current[index] = node; }} className="motion-gallery-card absolute inset-0 flex flex-col justify-between gap-3 overflow-hidden rounded-3xl border border-[#5d7aaf] bg-[linear-gradient(140deg,#1b355d,#10182a_72%)] p-6 shadow-2xl shadow-black/50 sm:p-8 lg:p-10" style={{ zIndex: selected.length - index, visibility: index === 0 ? "visible" : "hidden", opacity: index === 0 ? 1 : 0, transform: index === 0 ? "none" : "translateY(34%) scale(.9) rotateX(8deg)" }}>
                 <div className="flex items-start justify-between gap-3 font-mono text-xs uppercase tracking-[.2em] text-[#b4d1ff]"><span>0{index + 1} / 0{selected.length}</span><span>Selected work</span></div>
                 <div className="relative z-10">
                   <p className="mb-4 text-sm text-[#afc5e5]">{project.tagline}</p>
-                  <h3 className="h-display max-w-2xl text-[clamp(2.5rem,6vw,5.5rem)] leading-none">{project.title}</h3>
+                  <h3 className="h-display max-w-2xl text-[clamp(2.2rem,5vw,4.2rem)] leading-none">{project.title}</h3>
                   <p className="mt-5 max-w-lg text-sm leading-relaxed text-[#bdcce2]">{project.description}</p>
                 </div>
                 <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
