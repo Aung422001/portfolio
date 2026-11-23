@@ -20,7 +20,7 @@ const { navItems, profile } = readData('profile');
 test('every project has a unique identity, valid links and existing local images', () => {
   assert.equal(new Set(projects.map(p => p.slug)).size, projects.length);
   assert.equal(projects.filter(p => p.featured).length, 1);
-  assert.equal(featuredProject.slug, 'applytrail');
+  assert.equal(featuredProject.slug, 'merbolo');
   assert.equal(otherProjects.length, projects.length - 1);
   for (const project of projects) {
     assert.ok(project.title && project.description && project.stack.length);

@@ -246,9 +246,15 @@ body {
 
 
 /* Combined motion gallery: static accessible layout for reduced-motion users. */
-@media (prefers-reduced-motion: reduce) {
+.motion-gallery-card > div { opacity: var(--gallery-content-opacity, 1); }
+@media (max-width: 699px) {
+  .motion-gallery-card { padding: 1.25rem; }
+  .motion-gallery-card h3 { font-size: clamp(1.8rem, 7vw, 3rem); }
+}
+@media (prefers-reduced-motion: reduce), (max-height: 520px) {
   .motion-gallery-scene { height:auto!important; }
   .motion-gallery-scene > div { position:relative!important; height:auto!important; padding-block:4rem; }
   .motion-gallery-scene > div > div { display:grid; gap:1.5rem; height:auto!important; transform:none!important; }
-  .motion-gallery-card { position:relative!important; min-height:360px; opacity:1!important; transform:none!important; pointer-events:auto!important; }
+  .motion-gallery-card { position:relative!important; min-height:360px; opacity:1!important; visibility:visible!important; transform:none!important; pointer-events:auto!important; }
+  .motion-gallery-card > div { opacity:1!important; }
 }
