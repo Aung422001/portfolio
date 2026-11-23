@@ -1,0 +1,39 @@
+name: Portfolio browser compatibility
+
+on:
+  push:
+    branches: [redesign/midnight-engineering]
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, msedge, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm install --no-save --package-lock=false playwright@1.62.1
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Browser smoke and responsive checks
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: |
+          npm run start -- --hostname 127.0.0.1 --port 3100 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for i in {1..40}; do
+            if curl -fsS http://127.0.0.1:3100/ -o /dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/browser-compatibility.mjs
