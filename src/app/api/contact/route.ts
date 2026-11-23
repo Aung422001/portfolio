@@ -51,6 +51,11 @@ export async function POST(request: Request) {
       signal: AbortSignal.timeout(8000),
     });
     if (!sent.ok) throw new Error("Provider unavailable");
+    const receipt: unknown = await sent.json();
+    // A successful HTTP status alone does not confirm provider acceptance.
+    if (!receipt || typeof receipt !== "object" || !("id" in receipt) || typeof receipt.id !== "string" || !receipt.id.trim()) {
+      throw new Error("Missing provider receipt");
+    }
     return NextResponse.json({ sent: true });
   } catch {
     return NextResponse.json({ sent: false, error: "Delivery could not be confirmed. Please use your email app." }, { status: 502 });
