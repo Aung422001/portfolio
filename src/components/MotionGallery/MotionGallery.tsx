@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { projects } from "@/data/projects";
-import { cardOpacity, smoothProgress } from "./motionMath";
+import { cardOpacity, smoothProgress, stackedCardPose } from "./motionMath";
 
 const selected = ["triapex", "merbolo", "applytrail"].map((slug) => projects.find((p) => p.slug === slug)!).filter(Boolean);
 const FRAME_MS = 1000 / 60;
@@ -139,6 +139,7 @@ export function MotionGallery() {
     const scene = sceneRef.current;
     if (!scene) return;
     const staticLayout = window.matchMedia("(prefers-reduced-motion: reduce), (max-height: 520px)");
+    const compactLayout = window.matchMedia("(max-width: 699px)");
     let raf = 0;
     let current = 0;
     let target = 0;
@@ -153,8 +154,9 @@ export function MotionGallery() {
       const progress = current * (selected.length - 1);
       if (progress === previousProgress) return;
       previousProgress = progress;
+      const compact = compactLayout.matches;
       const nearest = Math.round(progress);
-      const nextIndex = cardOpacity(progress - nearest).content > .35 ? nearest : -1;
+      const nextIndex = compact ? nearest : cardOpacity(progress - nearest).content > .35 ? nearest : -1;
       cardsRef.current.forEach((card, index) => {
         if (!card) return;
         const distance = clamp(progress - index, -1, 1);
@@ -163,12 +165,25 @@ export function MotionGallery() {
         // Crossfade the surfaces, but never overlay two sets of readable text.
         const { surface: fade, content: contentFade } = cardOpacity(distance);
         const translateY = distance < 0 ? 24 * eased : -18 * eased;
-        if (paintedDistances[index] !== distance) {
-          paintedDistances[index] = distance;
-          card.style.transform = `translate3d(0,${translateY}%,0) scale(${1 - .10 * eased}) rotateX(${(distance < 0 ? 8 : -7) * eased}deg)`;
-          card.style.opacity = String(fade);
-          card.style.setProperty("--gallery-content-opacity", String(contentFade));
-          card.style.visibility = fade < .005 ? "hidden" : "visible";
+        // On mobile the outgoing card is stationary, so avoid rewriting its
+        // styles on every scroll frame while the incoming card covers it.
+        const poseKey = compact && distance >= 0 && distance < 1 ? 0 : distance;
+        if (paintedDistances[index] !== poseKey) {
+          paintedDistances[index] = poseKey;
+          if (compact) {
+            const pose = stackedCardPose(distance);
+            card.style.transform = `translate3d(0,${pose.translateY}%,0)`;
+            card.style.opacity = pose.visible ? "1" : "0";
+            card.style.visibility = pose.visible ? "visible" : "hidden";
+            card.style.setProperty("--gallery-content-opacity", "1");
+            card.style.zIndex = String(index + 1);
+          } else {
+            card.style.transform = `translate3d(0,${translateY}%,0) scale(${1 - .10 * eased}) rotateX(${(distance < 0 ? 8 : -7) * eased}deg)`;
+            card.style.opacity = String(fade);
+            card.style.setProperty("--gallery-content-opacity", String(contentFade));
+            card.style.visibility = fade < .005 ? "hidden" : "visible";
+            card.style.zIndex = String(selected.length - index);
+          }
         }
         if (nextIndex !== selectedIndex) {
           const interactive = index === nextIndex;
@@ -185,8 +200,8 @@ export function MotionGallery() {
       if (!active || staticLayout.matches || document.hidden) return;
       const dt = Math.max(0, time - lastTime);
       lastTime = time;
-      // Exponential decay with a 65ms time constant, independent of refresh rate.
-      current = smoothProgress(current, target, dt);
+      // A shorter response on phones keeps the card close to the moving finger.
+      current = smoothProgress(current, target, dt, compactLayout.matches ? 45 : 65);
       updateCards();
       if (current !== target) raf = requestAnimationFrame(paint);
     };
@@ -210,6 +225,11 @@ export function MotionGallery() {
       current = target = readTarget();
       previousProgress = -1;
       updateCards();
+    };
+    const onCompactChange = () => {
+      paintedDistances.length = 0;
+      selectedIndex = -2;
+      if (!staticLayout.matches && !document.hidden) snap();
     };
     const sync = () => {
       stop();
@@ -237,6 +257,7 @@ export function MotionGallery() {
     ro.observe(document.body);
     window.addEventListener("resize", measure);
     staticLayout.addEventListener("change", sync);
+    compactLayout.addEventListener("change", onCompactChange);
     document.addEventListener("visibilitychange", sync);
     sync();
     return () => {
@@ -246,6 +267,7 @@ export function MotionGallery() {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", measure);
       staticLayout.removeEventListener("change", sync);
+      compactLayout.removeEventListener("change", onCompactChange);
       document.removeEventListener("visibilitychange", sync);
     };
   }, []);
@@ -263,7 +285,7 @@ export function MotionGallery() {
       </section>
       <section ref={sceneRef} tabIndex={-1} aria-label="Scroll-controlled project showcase" className="motion-gallery-scene relative h-[380svh]">
         <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_center,#172a4a_0%,#0b1120_72%)] px-5" style={{ perspective: "1200px" }}>
-          <div className="relative h-[min(78svh,540px)] w-full max-w-4xl" style={{ transformStyle: "preserve-3d" }}>
+          <div className="motion-gallery-track relative h-[min(78svh,540px)] w-full max-w-4xl" style={{ transformStyle: "preserve-3d" }}>
             {selected.map((project, index) => (
               <article key={project.slug} ref={(node) => { cardsRef.current[index] = node; }} className="motion-gallery-card absolute inset-0 flex flex-col justify-between gap-3 overflow-hidden rounded-3xl border border-[#5d7aaf] bg-[linear-gradient(140deg,#1b355d,#10182a_72%)] p-6 shadow-2xl shadow-black/50 sm:p-8 lg:p-10" style={{ zIndex: selected.length - index, visibility: index === 0 ? "visible" : "hidden", opacity: index === 0 ? 1 : 0, transform: index === 0 ? "none" : "translateY(34%) scale(.9) rotateX(8deg)" }}>
                 <div className="flex items-start justify-between gap-3 font-mono text-xs uppercase tracking-[.2em] text-[#b4d1ff]"><span>0{index + 1} / 0{selected.length}</span><span>Selected work</span></div>

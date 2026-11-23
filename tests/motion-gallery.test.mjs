@@ -8,7 +8,7 @@ const source = fs.readFileSync(new URL('../src/components/MotionGallery/motionMa
 const { outputText } = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } });
 const exports = {};
 vm.runInNewContext(outputText, { exports });
-const { smoothProgress, cardOpacity } = exports;
+const { smoothProgress, cardOpacity, stackedCardPose } = exports;
 
 test('smoothing converges identically over the same elapsed time at 60, 90, 120 and 144Hz', () => {
   const results = [60, 90, 120, 144].map(hz => {
@@ -20,6 +20,35 @@ test('smoothing converges identically over the same elapsed time at 60, 90, 120 
   assert.equal(results[0], 1);
   assert.ok(Math.abs(smoothProgress(0, 1, 100) - (1 - Math.exp(-100 / 65))) < 1e-9);
   assert.equal(smoothProgress(.8, .2, 1000), .2);
+});
+
+test('mobile cards slide over an opaque outgoing card without blank midpoints', () => {
+  for (let i = 0; i < 100; i++) {
+    const progress = i / 100;
+    const outgoing = stackedCardPose(progress);
+    const incoming = stackedCardPose(progress - 1);
+    assert.equal(outgoing.visible, true);
+    assert.equal(outgoing.translateY, 0);
+    assert.ok(incoming.translateY >= 0 && incoming.translateY <= 100);
+    if (i > 0) {
+      assert.equal(incoming.visible, true);
+      assert.ok(incoming.translateY < 100);
+    }
+  }
+  assert.equal(stackedCardPose(.5).translateY, 0);
+  assert.equal(stackedCardPose(-.5).translateY, 50);
+  assert.equal(stackedCardPose(1).visible, false);
+  assert.equal(stackedCardPose(0).visible, true);
+});
+
+test('touch smoothing converges faster without depending on refresh frequency', () => {
+  assert.ok(smoothProgress(0, 1, 100, 45) > smoothProgress(0, 1, 100));
+  const samples = [60, 90, 120, 144].map(hz => {
+    let value = 0;
+    for (let frame = 0; frame < hz / 2; frame++) value = smoothProgress(value, 1, 1000 / hz, 45);
+    return value;
+  });
+  assert.ok(samples.every(value => value === 1));
 });
 
 test('adjacent card surfaces crossfade while text does not overlap', () => {

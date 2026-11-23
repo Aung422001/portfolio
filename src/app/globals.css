@@ -248,6 +248,8 @@ body {
 /* Combined motion gallery: static accessible layout for reduced-motion users. */
 .motion-gallery-card > div { opacity: var(--gallery-content-opacity, 1); }
 @media (max-width: 699px) {
+  .motion-gallery-track { overflow: clip; border-radius: 1.5rem; transform-style: flat !important; }
+  .motion-gallery-card { will-change: transform; }
   .motion-gallery-card { padding: 1.25rem; }
   .motion-gallery-card h3 { font-size: clamp(1.8rem, 7vw, 3rem); }
 }
@@ -256,5 +258,7 @@ body {
   .motion-gallery-scene > div { position:relative!important; height:auto!important; padding-block:4rem; }
   .motion-gallery-scene > div > div { display:grid; gap:1.5rem; height:auto!important; transform:none!important; }
   .motion-gallery-card { position:relative!important; min-height:360px; opacity:1!important; visibility:visible!important; transform:none!important; pointer-events:auto!important; }
+  .motion-gallery-track { overflow: visible; }
+  .motion-gallery-card { will-change: auto; }
   .motion-gallery-card > div { opacity:1!important; }
 }
