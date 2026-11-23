@@ -2,6 +2,7 @@ import { Github, Linkedin, Mail } from "lucide-react";
 import { profile } from "@/data/profile";
 import { Reveal } from "@/components/ui/Reveal";
 import { ContactForm } from "./ContactForm";
+import { contactDeliveryEnabled } from "@/lib/contact-config";
 
 const CHANNELS = [
   { label: "GitHub", href: profile.github, icon: Github },
@@ -62,7 +63,7 @@ export function Contact() {
               <p className="mt-1.5 text-[0.85rem] text-[var(--ink-soft)]">
                 Send a message directly when delivery is available, or use your email app. Your message is only used to respond to your enquiry.
               </p>
-              <ContactForm sendEnabled={process.env.CONTACT_SEND_ENABLED === "true" && !!process.env.RESEND_API_KEY && !!process.env.CONTACT_FROM} />
+              <ContactForm sendEnabled={contactDeliveryEnabled()} />
             </div>
           </Reveal>
         </div>

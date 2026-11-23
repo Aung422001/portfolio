@@ -90,7 +90,7 @@ disabled or fails, visitors receive an honest prefilled `mailto:` fallback.
 
 To enable live delivery on a preview only, configure a verified Resend sender,
 an API key (`RESEND_API_KEY`), `CONTACT_FROM`, and a durable edge rate limit for
-`POST /api/contact`. Then set `CONTACT_SEND_ENABLED=true` for the intended
+`POST /api/contact`. After verifying that protection, set `CONTACT_RATE_LIMIT_READY=true` and `CONTACT_SEND_ENABLED=true` for the intended
 preview environment and redeploy it. Do not publish keys in Git. The endpoint's
 instance-local cooldown is only a secondary guard, not a global rate limiter.
 Test delivery with the owner before enabling the production environment.
