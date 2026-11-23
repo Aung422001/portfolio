@@ -148,6 +148,7 @@ export function MotionGallery() {
     let previousProgress = -1;
     let selectedIndex = -2;
     const paintedDistances: number[] = [];
+    const paintedVisibility: boolean[] = [];
 
     const readTarget = () => clamp((window.scrollY - start) / range, 0, 1);
     const updateCards = () => {
@@ -166,9 +167,11 @@ export function MotionGallery() {
           paintedDistances[index] = poseKey;
           const pose = stackedCardPose(distance);
           card.style.transform = compact ? `translate3d(0,${pose.translateY}%,0)` : `translate3d(0,${pose.translateY}%,0) perspective(1200px) rotateX(${pose.tilt}deg) scale(${pose.scale})`;
-          card.style.opacity = pose.visible ? "1" : "0";
-          card.style.visibility = pose.visible ? "visible" : "hidden";
-          card.style.zIndex = String(index + 1);
+          if (paintedVisibility[index] !== pose.visible) {
+            paintedVisibility[index] = pose.visible;
+            card.style.opacity = pose.visible ? "1" : "0";
+            card.style.visibility = pose.visible ? "visible" : "hidden";
+          }
         }
         if (nextIndex !== selectedIndex) {
           const interactive = index === nextIndex;
@@ -213,6 +216,7 @@ export function MotionGallery() {
     };
     const onCompactChange = () => {
       paintedDistances.length = 0;
+      paintedVisibility.length = 0;
       selectedIndex = -2;
       if (!staticLayout.matches && !document.hidden) snap();
     };
@@ -222,6 +226,7 @@ export function MotionGallery() {
         selectedIndex = -2;
         previousProgress = -1;
         paintedDistances.length = 0;
+        paintedVisibility.length = 0;
         cardsRef.current.forEach((card) => {
           if (!card) return;
           card.inert = false;
@@ -269,10 +274,10 @@ export function MotionGallery() {
         </div>
       </section>
       <section ref={sceneRef} tabIndex={-1} aria-label="Scroll-controlled project showcase" className="motion-gallery-scene relative h-[380svh]">
-        <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_center,#172a4a_0%,#0b1120_72%)] px-5" style={{ perspective: "1200px" }}>
-          <div className="motion-gallery-track relative h-[min(78svh,540px)] w-full max-w-4xl">
+        <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_center,#172a4a_0%,#0b1120_72%)] px-5">
+          <div className="motion-gallery-track relative h-[min(78svh,540px)] w-full max-w-4xl shadow-2xl shadow-black/50">
             {selected.map((project, index) => (
-              <article key={project.slug} ref={(node) => { cardsRef.current[index] = node; }} className="motion-gallery-card absolute inset-0 flex flex-col justify-between gap-3 overflow-hidden rounded-3xl border border-[#5d7aaf] bg-[linear-gradient(140deg,#1b355d,#10182a_72%)] p-6 shadow-2xl shadow-black/50 sm:p-8 lg:p-10" style={{ zIndex: selected.length - index, visibility: index === 0 ? "visible" : "hidden", opacity: index === 0 ? 1 : 0, transform: index === 0 ? "none" : "translateY(34%) scale(.9) rotateX(8deg)" }}>
+              <article key={project.slug} ref={(node) => { cardsRef.current[index] = node; }} className="motion-gallery-card absolute inset-0 flex flex-col justify-between gap-3 overflow-hidden rounded-3xl border border-[#5d7aaf] bg-[linear-gradient(140deg,#1b355d,#10182a_72%)] p-6 sm:p-8 lg:p-10" style={{ zIndex: index + 1, visibility: index === 0 ? "visible" : "hidden", opacity: index === 0 ? 1 : 0, transform: index === 0 ? "none" : "translateY(100%)" }}>
                 <div className="flex items-start justify-between gap-3 font-mono text-xs uppercase tracking-[.2em] text-[#b4d1ff]"><span>0{index + 1} / 0{selected.length}</span><span>Selected work</span></div>
                 <div className="relative z-10">
                   <p className="mb-4 text-sm text-[#afc5e5]">{project.tagline}</p>

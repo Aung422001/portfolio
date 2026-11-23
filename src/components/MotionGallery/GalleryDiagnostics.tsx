@@ -40,9 +40,19 @@ export function GalleryDiagnostics({ sceneRef }: { sceneRef: RefObject<HTMLEleme
       if (!first) first = now;
       if (!runStart) {
         if (previous) calibration.push(now - previous);
+        if (now - first > 2500 && calibration.length < 10) {
+          setStatus("Invalid calibration: browser throttled. Select this tab and retry.");
+          setRunning(false);
+          return;
+        }
         if (now - first >= 1000 && calibration.length >= 10) {
           const sorted = calibration.sort((a, b) => a - b);
           refreshInterval = sorted[Math.floor(sorted.length * .25)];
+          if (refreshInterval > 40 || refreshInterval <= 0) {
+            setStatus("Invalid calibration: keep this tab foreground and retry.");
+            setRunning(false);
+            return;
+          }
           runStart = now;
           setStatus("Sampling forward and reverse scroll (8 s)…");
         }
@@ -53,7 +63,7 @@ export function GalleryDiagnostics({ sceneRef }: { sceneRef: RefObject<HTMLEleme
         window.scrollTo({ top: top + range * progress, behavior: "instant" });
         if (elapsed >= 8000) {
           setResult({ ...frameStats(intervals, refreshInterval), hz: 1000 / refreshInterval });
-          setStatus("Complete — foreground rAF sample");
+          setStatus(Math.max(...intervals) > 250 ? "Complete — large frame gaps detected; verify tab stayed foreground" : "Complete — foreground rAF sample");
           setRunning(false);
           return;
         }
