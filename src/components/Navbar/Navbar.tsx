@@ -45,14 +45,14 @@ export function Navbar() {
         <a
           href="#home"
           className="mr-auto flex items-center gap-2.5 rounded-full"
-          aria-label={`${profile.initials} ${profile.name} — home`}
         >
           <span className="grid h-8 w-8 place-items-center rounded-md bg-[var(--lagoon)] text-[0.7rem] font-semibold tracking-tight text-[var(--on-accent)]">
             {profile.initials}
           </span>
-          <span className="hidden text-[0.9rem] font-medium sm:block">
+          <span className="sr-only text-[0.9rem] font-medium sm:not-sr-only">
             {profile.name}
           </span>
+          <span className="sr-only"> — home</span>
         </a>
 
         <ul className="hidden items-center gap-1 md:flex">

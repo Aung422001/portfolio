@@ -26,6 +26,7 @@ test('motion showcase supports manual pause and an accessible static layout', ()
 test('visible navigation and showcase link labels remain part of their accessible names', () => {
   const nav = read('../src/components/Navbar/Navbar.tsx');
   const gallery = read('../src/components/MotionGallery/MotionGallery.tsx');
-  assert.ok(nav.includes('aria-label={`${profile.initials} ${profile.name} — home`}'));
+  assert.ok(nav.includes('sr-only text-[0.9rem] font-medium sm:not-sr-only'));
+  assert.ok(nav.includes('<span className="sr-only"> — home</span>'));
   assert.ok(gallery.includes('aria-label={`View live project ↗: ${project.title} (opens in new tab)`}'));
 });
