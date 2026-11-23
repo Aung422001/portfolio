@@ -1,0 +1,44 @@
+name: Lighthouse portfolio audit
+
+on:
+  push:
+    branches: [redesign/midnight-engineering]
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        device: [mobile, desktop]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Collect three Lighthouse runs
+        env:
+          DEVICE: ${{ matrix.device }}
+        run: |
+          args=()
+          if [ "$DEVICE" = desktop ]; then args+=(--collect.settings.preset=desktop); fi
+          npm exec --yes --package=@lhci/cli@0.16.1 -- lhci collect \
+            --collect.startServerCommand='npm run start -- --hostname 127.0.0.1 --port 3100' \
+            --collect.url=http://127.0.0.1:3100/ \
+            --collect.numberOfRuns=3 "${args[@]}"
+      - name: Summarize measured results
+        run: node scripts/lighthouse-summary.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-${{ matrix.device }}
+          path: .lighthouseci/
+          include-hidden-files: true
+          retention-days: 7
