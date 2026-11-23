@@ -11,8 +11,9 @@ const outfit = Outfit({
   variable: "--font-outfit",
 });
 
-const TITLE = `${profile.name} — Frontend Developer`;
-const DESCRIPTION = `Portfolio of ${profile.name}, a frontend developer in Chiang Mai building modern, responsive interfaces with React, Next.js and TypeScript.`;
+const TITLE = `${profile.name} — Frontend & Full-Stack Developer`;
+const DESCRIPTION = `Portfolio of ${profile.name}, a 2026 computer science graduate and junior frontend/full-stack developer in Chiang Mai. Explore React, Next.js and TypeScript projects and internship experience.`;
+const isPreview = process.env.VERCEL_ENV === "preview";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -45,11 +46,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
+    images: ["/opengraph-image"],
   },
   robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+    index: !isPreview,
+    follow: !isPreview,
+    googleBot: { index: !isPreview, follow: !isPreview, "max-image-preview": "large" },
   },
 };
 
@@ -65,6 +67,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={outfit.variable}>
       <head>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "Person", name: profile.name, jobTitle: profile.role, url: SITE_URL, sameAs: [profile.github, profile.linkedin] }).replace(/</g, "\\u003c") }} />
         {/* Runs before paint: opts into the scroll-reveal hidden state only when
             JS is running, then removes it again if React never mounted, so a
             failed hydration can't leave the page blank. */}

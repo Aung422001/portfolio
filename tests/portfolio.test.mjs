@@ -44,3 +44,12 @@ test('navigation targets remain unique and a downloadable CV cannot be missing',
   for (const item of navItems) assert.equal(item.href, '#' + item.id);
   if (profile.cvAvailable) assert.ok(fs.existsSync(path.join(root, 'public', profile.cvPath)));
 });
+
+test('featured projects include evidence and a case study without unsupported payment claims', () => {
+  for (const slug of ['triapex', 'merbolo', 'applytrail']) {
+    const project = projects.find(p => p.slug === slug);
+    assert.ok(project.study.problem && project.study.contribution && project.study.approach && project.image);
+  }
+  assert.match(projects.find(p => p.slug === 'merbolo').demoNote, /real payment processing is not claimed/);
+  assert.equal(profile.cvAvailable, true);
+});

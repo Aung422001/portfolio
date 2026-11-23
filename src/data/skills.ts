@@ -37,7 +37,7 @@ export const skillGroups: SkillGroup[] = [
     ],
   },
   {
-    title: "AI",
-    items: ["Google Gemini API", "Claude Code", "Codex"],
+    title: "Testing",
+    items: ["Jest", "Vitest", "React Testing Library", "Playwright", "GitHub Actions"],
   },
 ];

@@ -35,7 +35,7 @@ export function Hero() {
           <div className="hero-story hero-story-5 mt-8 flex flex-wrap gap-3">
             <Button href="#projects">See what I&apos;ve built <ArrowDownRight size={16} aria-hidden /></Button>
             <Button href="#skills" variant="outline">What I can do</Button>
-            {profile.cvAvailable && <Button href={profile.cvPath} variant="outline" download><ArrowDownToLine size={16} aria-hidden /> CV</Button>}
+            {profile.cvAvailable && <Button href={profile.cvPath} variant="outline" download><ArrowDownToLine size={16} aria-hidden /> Download CV</Button>}
           </div>
           <div className="hero-story hero-story-6 mt-8 flex items-center gap-5 text-sm text-[var(--ink-soft)]">
             <a href={profile.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 transition-colors hover:text-[var(--lagoon)]"><Github size={17} aria-hidden /> GitHub</a>

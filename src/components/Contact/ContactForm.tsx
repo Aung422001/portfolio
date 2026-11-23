@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Send } from "lucide-react";
 import { profile } from "@/data/profile";
 import { Button } from "@/components/ui/Button";
+import { validateContact } from "@/lib/contact";
 
 interface Fields {
   name: string;
@@ -15,64 +16,46 @@ type Errors = Partial<Record<keyof Fields, string>>;
 
 const EMPTY: Fields = { name: "", email: "", message: "" };
 
-function validate(fields: Fields): Errors {
-  const errors: Errors = {};
-
-  if (!fields.name.trim()) {
-    errors.name = "Please enter your name.";
-  }
-
-  if (!fields.email.trim()) {
-    errors.email = "Please enter your email address.";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(fields.email.trim())) {
-    errors.email = "That doesn't look like a valid email address.";
-  }
-
-  if (!fields.message.trim()) {
-    errors.message = "Please write a message.";
-  } else if (fields.message.trim().length < 10) {
-    errors.message = "A little more detail would help — at least 10 characters.";
-  }
-
-  return errors;
-}
-
-export function ContactForm() {
+export function ContactForm({ sendEnabled }: { sendEnabled: boolean }) {
   const [fields, setFields] = useState<Fields>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [deliveryError, setDeliveryError] = useState("");
+  const [website, setWebsite] = useState("");
 
   const update = (key: keyof Fields) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setFields((current) => ({ ...current, [key]: event.target.value }));
+    setSubmitted(false);
+    setSent(false);
+    setDeliveryError("");
     if (errors[key]) setErrors((current) => ({ ...current, [key]: undefined }));
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const found = validate(fields);
+    const found = validateContact(fields);
     setErrors(found);
     if (Object.keys(found).length > 0) {
       setSubmitted(false);
       return;
     }
 
-    // ── INTEGRATION POINT ────────────────────────────────────────────────
-    // No email service is wired up, and this deliberately does not pretend
-    // otherwise. To make it send for real, POST to your provider here:
-    //
-    //   await fetch("/api/contact", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(fields),
-    //   });
-    //
-    // Then add app/api/contact/route.ts calling Resend, SendGrid or Formspree
-    // with the key in an env var. Until then the form hands the visitor a
-    // prefilled mailto so the message still reaches the inbox.
-    // ─────────────────────────────────────────────────────────────────────
+    if (sendEnabled) {
+      setSending(true);
+      setDeliveryError("");
+      try {
+        const response = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...fields, website }) });
+        const result = await response.json();
+        if (response.ok && result.sent === true) { setSent(true); setSubmitted(false); setFields(EMPTY); return; }
+        setDeliveryError(result.error || "Delivery could not be confirmed.");
+      } catch { setDeliveryError("Delivery could not be confirmed."); }
+      finally { setSending(false); }
+    }
     setSubmitted(true);
   };
 
@@ -87,6 +70,7 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-4">
+      <div className="hidden" aria-hidden="true"><label htmlFor="website">Leave empty</label><input id="website" tabIndex={-1} autoComplete="off" value={website} onChange={event => setWebsite(event.target.value)} /></div>
       <div>
         <label htmlFor="name" className="mb-1.5 block text-[0.8rem] text-[var(--ink-soft)]">
           Name
@@ -96,6 +80,7 @@ export function ContactForm() {
           name="name"
           type="text"
           autoComplete="name"
+          maxLength={100}
           value={fields.name}
           onChange={update("name")}
           aria-invalid={Boolean(errors.name)}
@@ -119,6 +104,7 @@ export function ContactForm() {
           name="email"
           type="email"
           autoComplete="email"
+          maxLength={254}
           value={fields.email}
           onChange={update("email")}
           aria-invalid={Boolean(errors.email)}
@@ -141,6 +127,7 @@ export function ContactForm() {
           id="message"
           name="message"
           rows={5}
+          maxLength={3000}
           value={fields.message}
           onChange={update("message")}
           aria-invalid={Boolean(errors.message)}
@@ -155,15 +142,17 @@ export function ContactForm() {
         )}
       </div>
 
-      <Button type="submit" variant="dark" className="w-full sm:w-auto">
+      <Button type="submit" variant="dark" disabled={sending} className="w-full sm:w-auto">
         <Send size={15} aria-hidden />
-        Prepare Email
+        {sending ? "Sending…" : sendEnabled ? "Send Message" : "Prepare Email"}
       </Button>
 
       <div role="status" aria-live="polite">
+        {sent && <p className="rounded-lg border border-[var(--line)] p-4 text-sm text-[var(--ink)]">Message accepted for delivery. Thank you.</p>}
         {submitted && (
           <div className="rounded-lg border border-[var(--line)] bg-[var(--surface)] p-4 text-[0.85rem] text-[var(--ink-soft)]">
             <p className="font-medium text-[var(--ink)]">Your message is ready.</p>
+            {deliveryError && <p className="mt-2 text-[var(--error)]">{deliveryError}</p>}
             <p className="mt-1.5">
               Nothing has been sent.{" "}
               <a href={mailto} className="font-medium text-[var(--ink)] underline underline-offset-4">

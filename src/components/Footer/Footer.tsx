@@ -19,6 +19,7 @@ export function Footer() {
           </div>
 
           <ul className="flex flex-wrap gap-6">
+            {profile.cvAvailable && <li><a href={profile.cvPath} download className="text-[0.85rem] text-[var(--ink-soft)] underline-offset-4 hover:underline">Download CV</a></li>}
             {LINKS.map((link) => (
               <li key={link.label}>
                 <a

@@ -26,7 +26,7 @@ export const profile = {
    * button that 404s is worse than no button.
    */
   cvPath: "/cv/aung-kyaw-hein-cv.pdf",
-  cvAvailable: false,
+  cvAvailable: true,
 } as const;
 
 export const aboutBody = [

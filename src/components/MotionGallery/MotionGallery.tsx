@@ -263,7 +263,7 @@ export function MotionGallery() {
   }, []);
 
   return (
-    <div className="motion-combo border-t border-[var(--line)]">
+    <div id="showcase" className="motion-combo border-t border-[var(--line)]">
       <section ref={heroRef} aria-label="Interactive 3D motion introduction" className="relative isolate flex min-h-[580px] items-center overflow-hidden px-6 py-24 sm:px-12 lg:min-h-[690px]">
         <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" />
         <div className="pointer-events-none relative z-10 max-w-2xl">
@@ -271,6 +271,7 @@ export function MotionGallery() {
           <h2 className="h-display mt-6 text-[clamp(3.3rem,8vw,7rem)] leading-[.99]">Ideas into<br/><span className="text-[var(--lagoon)]">motion.</span></h2>
           <p className="mt-7 max-w-md text-base leading-relaxed text-[var(--ink-soft)]">I turn complex problems into practical digital experiences. Move your cursor to explore the geometry, then scroll through selected work.</p>
           <p className="mt-8 font-mono text-xs uppercase tracking-[.18em] text-[var(--lagoon)]">Scroll to explore ↓</p>
+          <a href="#projects" className="pointer-events-auto mt-4 inline-flex rounded-md border border-[var(--line)] px-4 py-3 text-sm text-[var(--ink)]">Skip animation · View featured projects →</a>
         </div>
       </section>
       <section ref={sceneRef} tabIndex={-1} aria-label="Scroll-controlled project showcase" className="motion-gallery-scene relative h-[380svh]">
@@ -294,7 +295,7 @@ export function MotionGallery() {
           <p className="pointer-events-none absolute bottom-6 font-mono text-xs uppercase tracking-[.2em] text-[var(--ink-soft)]">Scroll to travel through projects ↓</p>
         </div>
       </section>
-      <div className="px-6 py-12 text-center font-mono text-xs uppercase tracking-[.2em] text-[var(--lagoon)]">Explore the full project details below ↓</div>
+      <div className="px-6 py-12 text-center font-mono text-xs uppercase tracking-[.2em] text-[var(--lagoon)]"><a href="#projects" className="underline underline-offset-4">Explore the full project details below ↓</a></div>
       <GalleryDiagnostics sceneRef={sceneRef} />
     </div>
   );

@@ -41,6 +41,7 @@ export interface Project {
   stack: string[];
   demoNote?: string;
   features?: string[];
+  study?: { problem: string; contribution: string; approach: string };
   metrics?: Metric[];
   links: ProjectLinks;
   featured?: boolean;

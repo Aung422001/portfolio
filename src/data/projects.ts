@@ -7,8 +7,9 @@ export const projects: Project[] = [
     title: "Merbolo Stationery Store",
     tagline: "Full-stack storefront and admin dashboard",
     description:
-      "Built the customer shopping flow and an admin dashboard for products and orders. React and Zustand manage the interface and cart state; an Express and MongoDB API provides authenticated data, with Stripe handling checkout.",
-    demoNote: "The catalog depends on a hosted API and may take time to load. The screenshot shows the interface without waiting for the backend.",
+      "Built the customer shopping flow and an admin dashboard for products and orders. React and Zustand manage the interface and cart state; an Express and MongoDB API provides authenticated data.",
+    demoNote: "The catalog depends on a hosted API and may take time to load. Checkout is a portfolio demonstration; real payment processing is not claimed.",
+    study: { problem: "A stationery store needs a consistent path from browsing to checkout and tools for managing products and orders.", contribution: "Built storefront, catalogue, cart, checkout and administrative interfaces with API integration.", approach: "React and Zustand coordinate UI and cart state; Express and MongoDB provide the application data layer." },
     stack: [
       "React",
       "Vite",
@@ -17,13 +18,12 @@ export const projects: Project[] = [
       "Axios",
       "Express",
       "MongoDB",
-      "Stripe",
       "JWT",
     ],
     features: [
       "Product catalogue and categories",
       "Shopping cart",
-      "Stripe checkout",
+      "Checkout interface (demo)",
       "JWT accounts and auth",
       "Admin dashboard",
       "Order and inventory management",
@@ -48,6 +48,7 @@ export const projects: Project[] = [
     image: "/projects/applytrail.jpg",
     imageKind: "screenshot",
     demoNote: "The hosted demo may need time to wake up. Guest tracking works without Google sign-in; Gmail features require a connected account. Source code is private.",
+    study: { problem: "Job applicants need a single place to keep track of saved opportunities, status updates and correspondence.", contribution: "Built the React tracking workspace and companion extension workflow for capturing and organizing job links.", approach: "Account-specific records use Google sign-in and MongoDB; optional Gmail integration connects reply checking and notifications." },
     year: "2026",
   },
   {
@@ -58,6 +59,7 @@ export const projects: Project[] = [
     description:
       "Built product catalogue, cart and checkout interfaces during a 14-week full-stack web development internship. Used TanStack Query for API data, Zustand for shared client state, and REST API integration for commerce workflows.",
     demoNote: "Hosted on Render; the first visit may need time to wake the service. Project notes and a screenshot are available while it starts.",
+    study: { problem: "A 3D-printer store needs responsive catalogue, cart and checkout interfaces connected to commerce APIs.", contribution: "Contributed frontend features during a 14-week remote full-stack internship, including responsive product catalogue, cart, checkout and REST API integration.", approach: "Next.js and TypeScript support the interface; TanStack Query handles server data and Zustand coordinates shared UI state. Supported debugging, testing, documentation and deployment." },
     stack: [
       "Next.js",
       "React",

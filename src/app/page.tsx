@@ -22,6 +22,7 @@ export default function Home() {
         <Navbar />
         <main id="main">
           <Hero />
+          <noscript><style>{"#showcase, .showcase-link { display: none !important; }"}</style></noscript>
           <MotionGallery />
           <Projects />
           <About />

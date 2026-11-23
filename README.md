@@ -84,10 +84,16 @@ with an empty alt, for artwork that only stands in for a screenshot.
 
 ### Connecting the contact form
 
-`ContactForm.tsx` validates on the client and then stops at a clearly marked
-integration point. It does **not** fake a successful send — it hands the visitor
-a prefilled `mailto:` instead. To make it send for real, add
-`src/app/api/contact/route.ts` and POST to it from the marked spot.
+The form supports a server-side Resend email handoff through `/api/contact`.
+It validates fields on both ends and keeps keys server-only. When delivery is
+disabled or fails, visitors receive an honest prefilled `mailto:` fallback.
+
+To enable live delivery on a preview only, configure a verified Resend sender,
+an API key (`RESEND_API_KEY`), `CONTACT_FROM`, and a durable edge rate limit for
+`POST /api/contact`. Then set `CONTACT_SEND_ENABLED=true` for the intended
+preview environment and redeploy it. Do not publish keys in Git. The endpoint's
+instance-local cooldown is only a secondary guard, not a global rate limiter.
+Test delivery with the owner before enabling the production environment.
 
 ## Notes on the implementation
 

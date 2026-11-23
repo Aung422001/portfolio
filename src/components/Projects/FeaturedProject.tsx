@@ -3,12 +3,11 @@ import type { Project } from "@/types";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { ProjectVisual } from "@/components/ui/ProjectVisual";
-import { TiltCard } from "@/components/ui/TiltCard";
 
 export function FeaturedProject({ project }: { project: Project }) {
   return (
     <Reveal as="article" className="mt-12">
-      <TiltCard><div className="overflow-hidden rounded-lg border border-[var(--line)] border-t-2 border-t-[var(--lagoon)] bg-[var(--surface)]">
+      <div id={`project-${project.slug}`} className="overflow-hidden rounded-lg border border-[var(--line)] border-t-2 border-t-[var(--lagoon)] bg-[var(--surface)]">
         <div className="grid lg:grid-cols-[1.05fr_1fr]">
           <div className="order-2 p-7 sm:p-9 lg:order-1 lg:p-11">
             <p className="text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
@@ -66,10 +65,13 @@ export function FeaturedProject({ project }: { project: Project }) {
               image={project.image}
               imageKind={project.imageKind}
               hint="Project preview"
-              priority
             />
           </div>
         </div>
+
+        {project.study && <dl className="grid gap-5 border-t border-[var(--line)] px-7 py-7 sm:px-9 lg:grid-cols-3 lg:px-11">
+          {[["Problem", project.study.problem], ["My contribution", project.study.contribution], ["Technical approach", project.study.approach]].map(([label, value]) => <div key={label}><dt className="text-xs font-semibold uppercase tracking-wider text-[var(--lagoon)]">{label}</dt><dd className="mt-2 text-sm leading-relaxed text-[var(--ink-soft)]">{value}</dd></div>)}
+        </dl>}
 
         {project.features && (
           <div className="border-t border-[var(--line)] px-7 py-8 sm:px-9 lg:px-11">
@@ -115,7 +117,7 @@ export function FeaturedProject({ project }: { project: Project }) {
             </p>
           </div>
         )}
-      </div></TiltCard>
+      </div>
     </Reveal>
   );
 }

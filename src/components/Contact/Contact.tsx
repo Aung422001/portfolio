@@ -60,9 +60,9 @@ export function Contact() {
                 Write an email
               </h3>
               <p className="mt-1.5 text-[0.85rem] text-[var(--ink-soft)]">
-                Prepare a draft, then send it using your email app.
+                Send a message directly when delivery is available, or use your email app. Your message is only used to respond to your enquiry.
               </p>
-              <ContactForm />
+              <ContactForm sendEnabled={process.env.CONTACT_SEND_ENABLED === "true" && !!process.env.RESEND_API_KEY && !!process.env.CONTACT_FROM} />
             </div>
           </Reveal>
         </div>
