@@ -8,7 +8,7 @@ const source = fs.readFileSync(new URL('../src/components/MotionGallery/motionMa
 const { outputText } = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } });
 const exports = {};
 vm.runInNewContext(outputText, { exports });
-const { smoothProgress, stackedCardPose, frameStats } = exports;
+const { smoothProgress, stackedCardPose, frameStats, nextCanvasDeadline, TOUCH_SMOOTHING_MS } = exports;
 
 test('smoothing converges identically over the same elapsed time at 60, 90, 120 and 144Hz', () => {
   const results = [60, 90, 120, 144].map(hz => {
@@ -44,13 +44,25 @@ test('desktop and mobile cards slide over an opaque outgoing card without blank 
 });
 
 test('touch smoothing converges faster without depending on refresh frequency', () => {
-  assert.ok(smoothProgress(0, 1, 100, 45) > smoothProgress(0, 1, 100));
+  assert.ok(smoothProgress(0, 1, 100, TOUCH_SMOOTHING_MS) > smoothProgress(0, 1, 100, 45));
   const samples = [60, 90, 120, 144].map(hz => {
     let value = 0;
-    for (let frame = 0; frame < hz / 2; frame++) value = smoothProgress(value, 1, 1000 / hz, 45);
+    for (let frame = 0; frame < hz / 2; frame++) value = smoothProgress(value, 1, 1000 / hz, TOUCH_SMOOTHING_MS);
     return value;
   });
   assert.ok(samples.every(value => value === 1));
+});
+
+test('mobile canvas keeps its 60 Hz paint budget across display refresh rates', () => {
+  for (const hz of [60, 90, 120, 144]) {
+    let deadline = 0, paints = 0;
+    for (let frame = 0; frame < hz * 2; frame++) {
+      const next = nextCanvasDeadline(frame * 1000 / hz, deadline, 1000 / 60);
+      if (next !== null) { deadline = next; paints++; }
+    }
+    assert.ok(Math.abs(paints - 120) <= 1, `${hz} Hz: ${paints} paints`);
+  }
+  assert.equal(nextCanvasDeadline(1000, 20, 1000 / 60), 1000 + 1000 / 60);
 });
 
 test('frame metrics distinguish normal intervals from missed refresh slots', () => {

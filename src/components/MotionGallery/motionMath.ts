@@ -1,7 +1,17 @@
 /** Exponential smoothing with a fixed time constant, regardless of refresh rate. */
+export const TOUCH_SMOOTHING_MS = 36;
+
 export function smoothProgress(current: number, target: number, elapsedMs: number, timeConstant = 65) {
   const next = current + (target - current) * -Math.expm1(-Math.max(0, elapsedMs) / timeConstant);
   return Math.abs(target - next) < 0.0005 ? target : next;
+}
+
+/** Keep the canvas paint deadline in phase with a 60 Hz budget. Dropping the
+ * fractional remainder would unnecessarily halve the cadence on 90 Hz displays. */
+export function nextCanvasDeadline(time: number, deadline: number, interval: number) {
+  if (deadline && time < deadline - 1) return null;
+  if (!deadline || time - deadline >= interval) return time + interval;
+  return deadline + interval;
 }
 
 /** The incoming opaque card slides over the outgoing card.

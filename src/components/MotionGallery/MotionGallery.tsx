@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { projects } from "@/data/projects";
-import { smoothProgress, stackedCardPose } from "./motionMath";
+import { nextCanvasDeadline, smoothProgress, stackedCardPose, TOUCH_SMOOTHING_MS } from "./motionMath";
 import { GalleryDiagnostics } from "./GalleryDiagnostics";
 
 const selected = ["triapex", "merbolo", "applytrail"].map((slug) => projects.find((p) => p.slug === slug)!).filter(Boolean);
@@ -44,7 +44,7 @@ export function MotionGallery() {
     let px = 0, py = 0, tx = 0, ty = 0;
     let visible = false;
     let lastTime = 0;
-    let mobile = false, lastDraw = 0;
+    let mobile = false, drawDeadline = 0;
     const desktopGeometry = makeGeometry(17, 95);
     const mobileGeometry = makeGeometry(12, 56);
     let geometry = desktopGeometry;
@@ -77,11 +77,14 @@ export function MotionGallery() {
       raf = 0;
       if (!reduced && (!visible || document.hidden)) return;
       // On phones, limit expensive canvas paints to roughly 60 Hz even on 120 Hz screens.
-      if (!reduced && mobile && lastDraw && time - lastDraw < FRAME_MS - 1) {
-        raf = requestAnimationFrame(render);
-        return;
+      if (!reduced && mobile) {
+        const next = nextCanvasDeadline(time, drawDeadline, FRAME_MS);
+        if (next === null) {
+          raf = requestAnimationFrame(render);
+          return;
+        }
+        drawDeadline = next;
       }
-      lastDraw = time;
       const dt = lastTime ? clamp(time - lastTime, 0, 50) : FRAME_MS;
       lastTime = time;
       ctx.clearRect(0, 0, w, h);
@@ -116,7 +119,7 @@ export function MotionGallery() {
     };
     const sync = () => {
       if (!reduced && visible && !document.hidden) {
-        if (!raf) { lastTime = 0; lastDraw = 0; raf = requestAnimationFrame(render); }
+        if (!raf) { lastTime = 0; drawDeadline = 0; raf = requestAnimationFrame(render); }
       } else { cancelAnimationFrame(raf); raf = 0; }
     };
     const onPreference = () => {
@@ -190,8 +193,9 @@ export function MotionGallery() {
       if (!active || isStatic() || document.hidden) return;
       const dt = Math.max(0, time - lastTime);
       lastTime = time;
-      // A shorter response on phones keeps the card close to the moving finger.
-      current = smoothProgress(current, target, dt, compactLayout.matches ? 45 : 65);
+      // Sample the latest native scroll position before painting, including momentum.
+      target = readTarget();
+      current = smoothProgress(current, target, dt, compactLayout.matches ? TOUCH_SMOOTHING_MS : 65);
       updateCards();
       if (current !== target) raf = requestAnimationFrame(paint);
     };
