@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { navItems, profile } from "@/data/profile";
 import { useActiveSection, useScrolled } from "@/lib/useActiveSection";
@@ -11,6 +11,7 @@ const SECTION_IDS = navItems.map((item) => item.id);
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
   const active = useActiveSection(SECTION_IDS);
   const scrolled = useScrolled();
 
@@ -19,7 +20,7 @@ export function Navbar() {
     if (!open) return;
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") { setOpen(false); menuButton.current?.focus(); }
     };
 
     document.addEventListener("keydown", onKey);
@@ -84,25 +85,22 @@ export function Navbar() {
         </Button>
 
         <button
+          ref={menuButton}
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="grid h-10 w-10 place-items-center rounded-full border border-[var(--line)] md:hidden"
+          className="grid h-11 w-11 place-items-center rounded-full border border-[var(--line)] md:hidden"
         >
           {open ? <X size={18} aria-hidden /> : <Menu size={18} aria-hidden />}
         </button>
       </nav>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
+          <nav
             id="mobile-menu"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            aria-label="Mobile navigation"
+            hidden={!open}
             className="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-[var(--line)] bg-[var(--shell)] md:hidden"
           >
             <ul className="px-5 py-3 sm:px-8">
@@ -116,7 +114,9 @@ export function Navbar() {
                       setOpen(false);
                       window.history.pushState(null, "", item.href);
                       // Smooth scrolling races the menu's exit animation.
-                      document.getElementById(item.id)?.scrollIntoView({ behavior: "instant" });
+                      const destination = document.getElementById(item.id);
+                      destination?.focus({ preventScroll: true });
+                      destination?.scrollIntoView({ behavior: "instant" });
                     }}
                     aria-current={active === item.id ? "true" : undefined}
                     className={`block rounded-lg px-3 py-3 text-[0.95rem] ${
@@ -130,9 +130,7 @@ export function Navbar() {
                 </li>
               ))}
             </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </nav>
     </header>
   );
 }

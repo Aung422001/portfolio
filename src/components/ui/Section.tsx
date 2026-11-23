@@ -26,7 +26,7 @@ export function Section({
   const headingId = `${id}-heading`;
 
   return (
-    <section id={id} aria-labelledby={title ? headingId : undefined} className={className}>
+    <section id={id} tabIndex={-1} aria-labelledby={headingId} className={className}>
       {marqueeText && <Marquee text={marqueeText} />}
 
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8 lg:px-12">

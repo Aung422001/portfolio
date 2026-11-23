@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Send } from "lucide-react";
 import { profile } from "@/data/profile";
 import { Button } from "@/components/ui/Button";
@@ -24,6 +24,14 @@ export function ContactForm({ sendEnabled }: { sendEnabled: boolean }) {
   const [sent, setSent] = useState(false);
   const [deliveryError, setDeliveryError] = useState("");
   const [website, setWebsite] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+  const invalidField = useRef<string | null>(null);
+  useEffect(() => {
+    if (invalidField.current) {
+      formRef.current?.querySelector<HTMLElement>(`#${invalidField.current}`)?.focus();
+      invalidField.current = null;
+    }
+  }, [errors]);
 
   const update = (key: keyof Fields) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -41,6 +49,7 @@ export function ContactForm({ sendEnabled }: { sendEnabled: boolean }) {
     const found = validateContact(fields);
     setErrors(found);
     if (Object.keys(found).length > 0) {
+      invalidField.current = Object.keys(found)[0];
       setSubmitted(false);
       return;
     }
@@ -69,7 +78,7 @@ export function ContactForm({ sendEnabled }: { sendEnabled: boolean }) {
     "focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]";
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-4">
+    <form ref={formRef} onSubmit={handleSubmit} noValidate aria-busy={sending} className="mt-8 space-y-4">
       <div className="hidden" aria-hidden="true"><label htmlFor="website">Leave empty</label><input id="website" tabIndex={-1} autoComplete="off" value={website} onChange={event => setWebsite(event.target.value)} /></div>
       <div>
         <label htmlFor="name" className="mb-1.5 block text-[0.8rem] text-[var(--ink-soft)]">
@@ -79,6 +88,7 @@ export function ContactForm({ sendEnabled }: { sendEnabled: boolean }) {
           id="name"
           name="name"
           type="text"
+          required
           autoComplete="name"
           maxLength={100}
           value={fields.name}
@@ -103,6 +113,7 @@ export function ContactForm({ sendEnabled }: { sendEnabled: boolean }) {
           id="email"
           name="email"
           type="email"
+          required
           autoComplete="email"
           maxLength={254}
           value={fields.email}
@@ -127,6 +138,7 @@ export function ContactForm({ sendEnabled }: { sendEnabled: boolean }) {
           id="message"
           name="message"
           rows={5}
+          required
           maxLength={3000}
           value={fields.message}
           onChange={update("message")}

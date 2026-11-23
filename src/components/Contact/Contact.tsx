@@ -14,6 +14,7 @@ export function Contact() {
   return (
     <section
       id="contact"
+      tabIndex={-1}
       aria-labelledby="contact-heading"
       className="border-t border-[var(--line)] bg-[var(--surface)] text-[var(--ink)]"
     >

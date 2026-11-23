@@ -77,8 +77,6 @@ export function Counter({ value, className = "" }: CounterProps) {
   }, [value]);
 
   return (
-    <span ref={ref} className={className}>
-      {value}
-    </span>
+    <><span aria-hidden="true" ref={ref} className={className}>{value}</span><span className="sr-only">{value}</span></>
   );
 }

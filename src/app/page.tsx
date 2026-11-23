@@ -20,7 +20,7 @@ export default function Home() {
 
       <div className="shell">
         <Navbar />
-        <main id="main">
+        <main id="main" tabIndex={-1}>
           <Hero />
           <noscript><style>{"#showcase, .showcase-link { display: none !important; }"}</style></noscript>
           <MotionGallery />

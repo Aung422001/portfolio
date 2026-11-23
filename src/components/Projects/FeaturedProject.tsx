@@ -34,19 +34,19 @@ export function FeaturedProject({ project }: { project: Project }) {
 
             <div className="mt-7 flex flex-wrap gap-2.5">
               {project.links.live && (
-                <Button href={project.links.live} size="sm">
+                <Button href={project.links.live} aria-label={`Live demo: ${project.title} (opens in new tab)`} size="sm">
                   Live Demo
                   <ArrowUpRight size={15} aria-hidden />
                 </Button>
               )}
               {project.links.github && (
-                <Button href={project.links.github} variant="outline" size="sm">
+                <Button href={project.links.github} aria-label={`GitHub repository: ${project.title} (opens in new tab)`} variant="outline" size="sm">
                   <Code2 size={15} aria-hidden />
                   GitHub
                 </Button>
               )}
               {project.links.caseStudy && (
-                <Button href={project.links.caseStudy} variant="outline" size="sm">
+                <Button href={project.links.caseStudy} aria-label={`Case study: ${project.title} (opens in new tab)`} variant="outline" size="sm">
                   <FileText size={15} aria-hidden />
                   Case Study
                 </Button>

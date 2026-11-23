@@ -10,7 +10,7 @@ const capabilities = [
 
 export function Hero() {
   return (
-    <section id="home" aria-labelledby="hero-heading" className="relative isolate overflow-hidden">
+    <section id="home" tabIndex={-1} aria-labelledby="hero-heading" className="relative isolate overflow-hidden">
       <div aria-hidden className="hero-glow pointer-events-none absolute inset-0" />
       <div className="relative mx-auto grid min-h-[min(850px,calc(100svh-4rem))] w-full max-w-6xl items-center gap-12 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1.25fr_0.75fr] lg:gap-16 lg:px-12">
         <div>

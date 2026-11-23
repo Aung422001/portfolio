@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { projects } from "@/data/projects";
 import { smoothProgress, stackedCardPose } from "./motionMath";
 import { GalleryDiagnostics } from "./GalleryDiagnostics";
@@ -25,6 +25,7 @@ function makeGeometry(rings: number, steps: number) {
 }
 
 export function MotionGallery() {
+  const [paused, setPaused] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<HTMLElement>(null);
@@ -37,7 +38,7 @@ export function MotionGallery() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let reduced = preference.matches;
+    let reduced = preference.matches || paused;
     let raf = 0;
     let w = 1, h = 1, tick = 0;
     let px = 0, py = 0, tx = 0, ty = 0;
@@ -119,7 +120,7 @@ export function MotionGallery() {
       } else { cancelAnimationFrame(raf); raf = 0; }
     };
     const onPreference = () => {
-      reduced = preference.matches;
+      reduced = preference.matches || paused;
       sync();
       if (reduced) { tick = px = py = tx = ty = 0; render(0); }
     };
@@ -133,12 +134,13 @@ export function MotionGallery() {
     hero.addEventListener("pointerleave", resetPointer);
     preference.addEventListener("change", onPreference);
     return () => { cancelAnimationFrame(raf); ro.disconnect(); observer.disconnect(); hero.removeEventListener("pointermove", pointer); hero.removeEventListener("pointerleave", resetPointer); preference.removeEventListener("change", onPreference); document.removeEventListener("visibilitychange", sync); };
-  }, []);
+  }, [paused]);
 
   useEffect(() => {
     const scene = sceneRef.current;
     if (!scene) return;
     const staticLayout = window.matchMedia("(prefers-reduced-motion: reduce), (max-height: 520px)");
+    const isStatic = () => paused || staticLayout.matches;
     const compactLayout = window.matchMedia("(max-width: 699px)");
     let raf = 0;
     let current = 0;
@@ -185,7 +187,7 @@ export function MotionGallery() {
 
     const paint = (time: number) => {
       raf = 0;
-      if (!active || staticLayout.matches || document.hidden) return;
+      if (!active || isStatic() || document.hidden) return;
       const dt = Math.max(0, time - lastTime);
       lastTime = time;
       // A shorter response on phones keeps the card close to the moving finger.
@@ -196,7 +198,7 @@ export function MotionGallery() {
 
     const stop = () => { cancelAnimationFrame(raf); raf = 0; };
     const schedule = () => {
-      if (!active || staticLayout.matches || document.hidden) return;
+      if (!active || isStatic() || document.hidden) return;
       target = readTarget();
       if (!raf && current !== target) { lastTime = performance.now(); raf = requestAnimationFrame(paint); }
     };
@@ -218,11 +220,11 @@ export function MotionGallery() {
       paintedDistances.length = 0;
       paintedVisibility.length = 0;
       selectedIndex = -2;
-      if (!staticLayout.matches && !document.hidden) snap();
+      if (!isStatic() && !document.hidden) snap();
     };
     const sync = () => {
       stop();
-      if (staticLayout.matches) {
+      if (isStatic()) {
         selectedIndex = -2;
         previousProgress = -1;
         paintedDistances.length = 0;
@@ -237,7 +239,7 @@ export function MotionGallery() {
     };
     const observer = new IntersectionObserver((entries) => {
       active = entries[0]?.isIntersecting ?? true;
-      if (active && !staticLayout.matches && !document.hidden) snap();
+      if (active && !isStatic() && !document.hidden) snap();
       else stop();
     }, { rootMargin: "200px" });
     observer.observe(scene);
@@ -260,10 +262,10 @@ export function MotionGallery() {
       compactLayout.removeEventListener("change", onCompactChange);
       document.removeEventListener("visibilitychange", sync);
     };
-  }, []);
+  }, [paused]);
 
   return (
-    <div id="showcase" className="motion-combo border-t border-[var(--line)]">
+    <div id="showcase" className={`motion-combo border-t border-[var(--line)]${paused ? " motion-paused" : ""}`}>
       <section ref={heroRef} aria-label="Interactive 3D motion introduction" className="relative isolate flex min-h-[580px] items-center overflow-hidden px-6 py-24 sm:px-12 lg:min-h-[690px]">
         <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" />
         <div className="pointer-events-none relative z-10 max-w-2xl">
@@ -271,7 +273,10 @@ export function MotionGallery() {
           <h2 className="h-display mt-6 text-[clamp(3.3rem,8vw,7rem)] leading-[.99]">Ideas into<br/><span className="text-[var(--lagoon)]">motion.</span></h2>
           <p className="mt-7 max-w-md text-base leading-relaxed text-[var(--ink-soft)]">I turn complex problems into practical digital experiences. Move your cursor to explore the geometry, then scroll through selected work.</p>
           <p className="mt-8 font-mono text-xs uppercase tracking-[.18em] text-[var(--lagoon)]">Scroll to explore ↓</p>
-          <a href="#projects" className="pointer-events-auto mt-4 inline-flex rounded-md border border-[var(--line)] px-4 py-3 text-sm text-[var(--ink)]">Skip animation · View featured projects →</a>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button type="button" aria-pressed={paused} onClick={() => setPaused(value => !value)} className="pointer-events-auto inline-flex min-h-11 items-center rounded-md border border-[var(--line)] px-4 py-3 text-sm text-[var(--ink)]">Pause showcase motion</button>
+            <a href="#projects" className="pointer-events-auto inline-flex min-h-11 items-center rounded-md border border-[var(--line)] px-4 py-3 text-sm text-[var(--ink)]">Skip animation · View featured projects →</a>
+          </div>
         </div>
       </section>
       <section ref={sceneRef} tabIndex={-1} aria-label="Scroll-controlled project showcase" className="motion-gallery-scene relative h-[380svh]">
@@ -287,7 +292,7 @@ export function MotionGallery() {
                 </div>
                 <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
                   <span className="font-mono text-xs text-[#9ec3ff]">{project.stack.slice(0, 4).join(" / ")}</span>
-                  {project.links.live && <a href={project.links.live} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#7ea7df] px-4 py-2 text-sm font-medium transition-colors hover:bg-[#284d7a]">View live project ↗</a>}
+                  {project.links.live && <a href={project.links.live} aria-label={`View ${project.title} live project (opens in new tab)`} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#7ea7df] px-4 py-2 text-sm font-medium transition-colors hover:bg-[#284d7a]">View live project ↗</a>}
                 </div>
               </article>
             ))}
@@ -296,7 +301,7 @@ export function MotionGallery() {
         </div>
       </section>
       <div className="px-6 py-12 text-center font-mono text-xs uppercase tracking-[.2em] text-[var(--lagoon)]"><a href="#projects" className="underline underline-offset-4">Explore the full project details below ↓</a></div>
-      <GalleryDiagnostics sceneRef={sceneRef} />
+      {!paused && <GalleryDiagnostics sceneRef={sceneRef} />}
     </div>
   );
 }
